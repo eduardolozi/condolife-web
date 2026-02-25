@@ -1,3 +1,5 @@
+import { logout } from '@/features/auth/services/AuthService'
+import { Button } from '@chakra-ui/react'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/users/')({
@@ -5,5 +7,14 @@ export const Route = createFileRoute('/users/')({
 })
 
 function RouteComponent() {
-  return <div>Hello "/users/"!</div>
+
+  const handleLogoutClick = async () => {
+    await logout()
+  }
+  
+  return (
+    <>
+      <Button onClick={handleLogoutClick}>Logout</Button>
+    </>
+  )
 }
