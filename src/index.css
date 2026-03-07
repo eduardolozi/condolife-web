@@ -1,0 +1,6 @@
+@import "tailwindcss/theme";
+@import "tailwindcss/utilities";
+
+@import 'primereact/resources/themes/lara-light-green/theme.css';
+@import 'primereact/resources/primereact.min.css';
+@import 'primeicons/primeicons.css';

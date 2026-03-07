@@ -1,6 +1,6 @@
-import { login, logout, register } from '@/features/auth/services/AuthService'
-import { Button } from '@chakra-ui/react'
+import { login, register } from '@/features/auth/services/AuthService'
 import { createFileRoute } from '@tanstack/react-router'
+import { Button } from 'primereact/button'
 
 export const Route = createFileRoute('/')({
   component: RouteComponent,
@@ -17,9 +17,8 @@ function RouteComponent() {
 
   return (
     <>
-      <Button onClick={handleLoginClick}>Login</Button>
-
-      <Button marginLeft={"3"} onClick={handleRegisterClick}>Criar meu condomínio</Button>
+      <Button onClick={handleLoginClick} label='Login' className='mr-2'></Button>
+      <Button onClick={handleRegisterClick} label='Criar meu condomínio'></Button>
     </>
   )
 }

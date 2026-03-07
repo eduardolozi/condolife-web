@@ -1,4 +1,4 @@
-import { authClient } from "@/config/auth.config";
+import { authClient } from "@/config/dev.config";
 import { User } from "oidc-client-ts";
 
 
