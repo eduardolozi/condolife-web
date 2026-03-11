@@ -4,3 +4,31 @@
 @import 'primereact/resources/themes/lara-light-green/theme.css';
 @import 'primereact/resources/primereact.min.css';
 @import 'primeicons/primeicons.css';
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+#root {
+  max-width: none;
+}
+
+@keyframes hero-logo-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.hero-logo-fade-in {
+  opacity: 0;
+  animation: hero-logo-fade-in 1.2s ease-out 0.2s forwards;
+}
+
+.landing-menubar .p-menubar-button {
+  display: none !important;
+}

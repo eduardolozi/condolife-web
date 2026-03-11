@@ -9,24 +9,20 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as UsersIndexRouteImport } from './routes/users/index'
-import { Route as UsersUserIdRouteImport } from './routes/users/$userId'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
+import { Route as AuthenticatedUsersIndexRouteImport } from './routes/_authenticated/users/index'
+import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
+import { Route as AuthenticatedUsersUserIdRouteImport } from './routes/_authenticated/users/$userId'
 
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const UsersIndexRoute = UsersIndexRouteImport.update({
-  id: '/users/',
-  path: '/users/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const UsersUserIdRoute = UsersUserIdRouteImport.update({
-  id: '/users/$userId',
-  path: '/users/$userId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthCallbackRoute = AuthCallbackRouteImport.update({
@@ -34,62 +30,87 @@ const AuthCallbackRoute = AuthCallbackRouteImport.update({
   path: '/auth/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedUsersIndexRoute = AuthenticatedUsersIndexRouteImport.update({
+  id: '/users/',
+  path: '/users/',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedDashboardIndexRoute =
+  AuthenticatedDashboardIndexRouteImport.update({
+    id: '/dashboard/',
+    path: '/dashboard/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedUsersUserIdRoute =
+  AuthenticatedUsersUserIdRouteImport.update({
+    id: '/users/$userId',
+    path: '/users/$userId',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth/callback': typeof AuthCallbackRoute
-  '/users/$userId': typeof UsersUserIdRoute
-  '/users/': typeof UsersIndexRoute
+  '/users/$userId': typeof AuthenticatedUsersUserIdRoute
+  '/dashboard/': typeof AuthenticatedDashboardIndexRoute
+  '/users/': typeof AuthenticatedUsersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth/callback': typeof AuthCallbackRoute
-  '/users/$userId': typeof UsersUserIdRoute
-  '/users': typeof UsersIndexRoute
+  '/users/$userId': typeof AuthenticatedUsersUserIdRoute
+  '/dashboard': typeof AuthenticatedDashboardIndexRoute
+  '/users': typeof AuthenticatedUsersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/auth/callback': typeof AuthCallbackRoute
-  '/users/$userId': typeof UsersUserIdRoute
-  '/users/': typeof UsersIndexRoute
+  '/_authenticated/users/$userId': typeof AuthenticatedUsersUserIdRoute
+  '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
+  '/_authenticated/users/': typeof AuthenticatedUsersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth/callback' | '/users/$userId' | '/users/'
+  fullPaths:
+    | '/'
+    | '/auth/callback'
+    | '/users/$userId'
+    | '/dashboard/'
+    | '/users/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth/callback' | '/users/$userId' | '/users'
-  id: '__root__' | '/' | '/auth/callback' | '/users/$userId' | '/users/'
+  to: '/' | '/auth/callback' | '/users/$userId' | '/dashboard' | '/users'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth/callback'
+    | '/_authenticated/users/$userId'
+    | '/_authenticated/dashboard/'
+    | '/_authenticated/users/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AuthCallbackRoute: typeof AuthCallbackRoute
-  UsersUserIdRoute: typeof UsersUserIdRoute
-  UsersIndexRoute: typeof UsersIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/users/': {
-      id: '/users/'
-      path: '/users'
-      fullPath: '/users/'
-      preLoaderRoute: typeof UsersIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/users/$userId': {
-      id: '/users/$userId'
-      path: '/users/$userId'
-      fullPath: '/users/$userId'
-      preLoaderRoute: typeof UsersUserIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth/callback': {
@@ -99,14 +120,50 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/users/': {
+      id: '/_authenticated/users/'
+      path: '/users'
+      fullPath: '/users/'
+      preLoaderRoute: typeof AuthenticatedUsersIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/dashboard/': {
+      id: '/_authenticated/dashboard/'
+      path: '/dashboard'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof AuthenticatedDashboardIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/users/$userId': {
+      id: '/_authenticated/users/$userId'
+      path: '/users/$userId'
+      fullPath: '/users/$userId'
+      preLoaderRoute: typeof AuthenticatedUsersUserIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
+interface AuthenticatedRouteChildren {
+  AuthenticatedUsersUserIdRoute: typeof AuthenticatedUsersUserIdRoute
+  AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
+  AuthenticatedUsersIndexRoute: typeof AuthenticatedUsersIndexRoute
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedUsersUserIdRoute: AuthenticatedUsersUserIdRoute,
+  AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
+  AuthenticatedUsersIndexRoute: AuthenticatedUsersIndexRoute,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AuthCallbackRoute: AuthCallbackRoute,
-  UsersUserIdRoute: UsersUserIdRoute,
-  UsersIndexRoute: UsersIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

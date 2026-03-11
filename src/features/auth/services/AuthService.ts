@@ -30,3 +30,9 @@ export const isAuthenticated = async () => {
     const user = await authClient.getUser()
     return !!user && !user.expired
 }
+
+export const getAccessToken = async () => {
+    const user = await authClient.getUser();
+    const accessToken = user?.access_token;
+    return accessToken;
+}

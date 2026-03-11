@@ -1,18 +1,12 @@
-import { condolifeServer } from "@/config/dev.config"
 import { condolifeApi } from "@/lib/axios";
 import type { CurrentUser } from "../types/currentUser";
 
-const controllerPath = '/Users'
+const controllerPath = '/User'
 
-const createCurrentUser = async () : Promise<CurrentUser> => {
+const getOrCreateCurrentUser =  async() => {
     const endpoint = `${controllerPath}/me`
-    const { data } = await condolifeApi.post<CurrentUser>(endpoint)
-    // verificar criacao de ApiError e de interceptors do axios.
-    return data
+    var response = await condolifeApi.post<CurrentUser>(endpoint)
+    return response.data
 }
 
-const getCurrentUser = () => {
-    const endpoint = `${controllerPath}/me`
-    condolifeApi.get<CurrentUser>(endpoint)    
-
-}
+export {getOrCreateCurrentUser}
