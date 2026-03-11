@@ -1,8 +1,6 @@
-import { logout } from '@/features/auth/services/AuthService'
 import { getOrCreateCurrentUser } from '@/features/auth/services/UserService'
 import type { CurrentUser } from '@/features/auth/types/currentUser'
 import { createFileRoute } from '@tanstack/react-router'
-import { Button } from 'primereact/button'
 import { useEffect, useState } from 'react'
 
 export const Route = createFileRoute('/_authenticated/dashboard/')({

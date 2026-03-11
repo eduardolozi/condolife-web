@@ -1,7 +1,10 @@
 import { isAuthenticated, logout } from '@/features/auth/services/AuthService'
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
-import { Button } from 'primereact/button'
+import { Avatar } from 'primereact/avatar'
 import { Menubar } from 'primereact/menubar'
+import type { MenuItem } from 'primereact/menuitem'
+import { TieredMenu } from 'primereact/tieredmenu'
+import { useRef } from 'react'
 
 export const Route = createFileRoute('/_authenticated')({
   component: AuthenticatedLayout,
@@ -14,9 +17,48 @@ export const Route = createFileRoute('/_authenticated')({
 })
 
 function AuthenticatedLayout() {
+  const menu = useRef<TieredMenu>(null)
+  
   const handleLogoutClick = async () => {
     await logout()
   }
+  
+  const items: MenuItem[] = [
+    {
+      label: "Meu perfil",
+      icon: "pi pi-user"
+    },
+    {
+      label: "Configurações",
+      icon: "pi pi-cog"
+    },
+    {
+      separator: true
+    },
+    {
+      label: 'Sair',
+      icon: 'pi pi-sign-out',
+      className: 'menu-item-danger',
+      command: () => {
+        void handleLogoutClick()
+      },
+    }
+  ]
+
+  const handleMenuShow = () => {
+    const menuElement = menu.current?.getElement()
+    if (!menuElement) return
+
+    menuElement.querySelectorAll('.p-focus').forEach((node) => {
+      node.classList.remove('p-focus')
+    })
+
+    const activeElement = document.activeElement as HTMLElement | null
+    if (activeElement && menuElement.contains(activeElement)) {
+      activeElement.blur()
+    }
+  }
+
   const logo = (
     <div className="flex flex-row h-4 max-w-[58vw] items-center gap-1.5 overflow-visible sm:h-5 sm:max-w-none sm:gap-2 md:h-6">
       <img
@@ -33,7 +75,10 @@ function AuthenticatedLayout() {
   ) 
 
   const end = (
-      <Button onClick={handleLogoutClick} outlined severity='warning' label='Sair' iconPos="right"></Button>
+      <div className="mr-2">
+          <TieredMenu className="my-2 avatar-tiered-menu w-44 py-1" model={items} popup ref={menu} onShow={handleMenuShow} />
+          <Avatar className='hover:cursor-pointer' image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHjMqxhyKtGXX33Xss3TcOhMPlc-1OdMIqmw&s" size="large" shape="circle" onClick={(e) => menu.current?.toggle(e)}/>
+      </div>
   )
 
   return (

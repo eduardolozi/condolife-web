@@ -32,3 +32,55 @@ html, body, #root {
 .landing-menubar .p-menubar-button {
   display: none !important;
 }
+
+.avatar-tiered-menu.p-tieredmenu {
+  border: 1px solid #e4e7ec;
+  border-radius: 14px;
+  box-shadow: 0 14px 34px rgba(16, 24, 40, 0.14);
+  background: #ffffff;
+}
+
+.avatar-tiered-menu .p-menuitem-content {
+  border-radius: 10px;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.avatar-tiered-menu .p-menuitem-link {
+  gap: 0.55rem;
+  padding: 0.7rem 0.85rem;
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.avatar-tiered-menu .p-menuitem-icon {
+  color: #4b5563;
+  font-size: 0.95rem;
+}
+
+.avatar-tiered-menu .p-menuitem-content:hover {
+  background: #f4f6f8;
+}
+
+.avatar-tiered-menu .p-menuitem-content:hover .p-menuitem-link,
+.avatar-tiered-menu .p-menuitem-content:hover .p-menuitem-icon {
+  color: #111827;
+}
+
+.avatar-tiered-menu .p-menuitem.p-focus > .p-menuitem-content:not(:hover),
+.avatar-tiered-menu .p-menuitem-content:focus-within:not(:hover) {
+  background: transparent;
+}
+
+.avatar-tiered-menu .menu-item-danger .p-menuitem-text,
+.avatar-tiered-menu .menu-item-danger .p-menuitem-icon {
+  color: #dc2626; /* red-600 */
+}
+
+.avatar-tiered-menu .menu-item-danger .p-menuitem-content:hover {
+  background: #fef2f2; /* red-50 */
+}
+
+.avatar-tiered-menu .menu-item-danger .p-menuitem-content:hover .p-menuitem-text,
+.avatar-tiered-menu .menu-item-danger .p-menuitem-content:hover .p-menuitem-icon {
+  color: #b91c1c; /* red-700 */
+}
