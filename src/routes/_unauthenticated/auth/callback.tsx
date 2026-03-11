@@ -2,7 +2,7 @@ import { loginCallback } from '@/features/auth/services/AuthService'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useEffect, useRef } from 'react'
 
-export const Route = createFileRoute('/auth/callback')({
+export const Route = createFileRoute('/_unauthenticated/auth/callback')({
   component: RouteComponent,
 })
 
