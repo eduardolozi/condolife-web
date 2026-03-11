@@ -1,4 +1,4 @@
-import UnauthenticatedMenubar from '@/components/UnauthenticatedMenubar'
+import UnauthenticatedMenubar from '@/shared/components/UnauthenticatedMenubar'
 import { login, register } from '@/features/auth/services/AuthService'
 import { createFileRoute } from '@tanstack/react-router'
 
