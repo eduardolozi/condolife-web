@@ -14,9 +14,11 @@ export const CondominiumMemberships = () => {
 
     const pageItems = condominiums.slice(first, first + rows)
     const fillers = Math.max(0, rows - pageItems.length)
-    
-    return (
-        <div className='flex w-full flex-col gap-2'>
+
+    const noMembershipsText = <p>Você ainda não possui condomínios vinculados.</p>
+
+    const condominiumsList = (
+        <>
             <div className="flex min-h-72 flex-col gap-2 sm:min-h-88 lg:min-h-104">
                 {pageItems.map(x => (
                     <div
@@ -26,8 +28,7 @@ export const CondominiumMemberships = () => {
                         <img
                             className="h-12 w-12 shrink-0 rounded-lg object-cover sm:h-14 sm:w-14"
                             src="https://static.arboimoveis.com.br/AP0247_FSIM/640x480/189e36cb-9313-4e49-a79e-df19b89c8b1e1689703837460.jpg"
-                            alt="Foto condominio"
-                        />
+                            alt="Foto condominio" />
 
                         <div className="min-w-0 flex-1 flex flex-col gap-1">
                             <span className="max-w-full truncate font-bold">{x.name}</span>
@@ -43,8 +44,7 @@ export const CondominiumMemberships = () => {
                         <Tag
                             value="Síndico"
                             severity="success"
-                            className="self-end px-2 py-1 text-xs sm:self-auto sm:ml-2"
-                        />
+                            className="self-end px-2 py-1 text-xs sm:self-auto sm:ml-2" />
                     </div>
                 ))}
 
@@ -59,14 +59,18 @@ export const CondominiumMemberships = () => {
                     </div>
                 ))}
             </div>
-
             <Paginator
                 className="condo-memberships-paginator mt-1"
                 first={first}
                 rows={rows}
                 totalRecords={condominiums.length}
-                onPageChange={onPageChange}
-            />
+                onPageChange={onPageChange} />
+        </>
+    )
+
+    return (
+        <div className='flex w-full flex-col gap-2'>
+            {condominiums.length === 0 ? noMembershipsText : condominiumsList}
         </div>
     )
 
