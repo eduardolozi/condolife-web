@@ -1,4 +1,4 @@
-import { Outlet } from "@tanstack/react-router"
+import { Outlet, useNavigate } from "@tanstack/react-router"
 import { Avatar } from "primereact/avatar"
 import { Menubar } from "primereact/menubar"
 import type { MenuItem } from "primereact/menuitem"
@@ -12,6 +12,7 @@ interface AuthenticatedMenubarProps {
 
 export const AuthenticatedMenubar = ({handleLogout, avatarUrl}: AuthenticatedMenubarProps) => {
     const menu = useRef<TieredMenu>(null)
+    const navigator = useNavigate()
     
     const items: MenuItem[] = [
     {
@@ -50,7 +51,7 @@ export const AuthenticatedMenubar = ({handleLogout, avatarUrl}: AuthenticatedMen
     }
 
     const logo = (
-    <div className="flex flex-row h-4 max-w-[58vw] items-center gap-1.5 overflow-visible sm:h-5 sm:max-w-none sm:gap-2 md:h-6">
+    <div onClick={() => navigator({to: '/dashboard'})} className="hover:cursor-pointer flex flex-row h-4 max-w-[58vw] items-center gap-1.5 overflow-visible sm:h-5 sm:max-w-none sm:gap-2 md:h-6">
         <img
             src="/logo-definitiva.png"
             className="h-16 w-auto object-contain"

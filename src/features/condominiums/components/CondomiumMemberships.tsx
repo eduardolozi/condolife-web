@@ -3,10 +3,13 @@ import { condominiums } from "../types/Condominium"
 import { Paginator } from 'primereact/paginator'
 import type { PaginatorPageChangeEvent } from 'primereact/paginator'
 import { useState } from 'react'
+import { Button } from "primereact/button"
+import { useNavigate } from "@tanstack/react-router"
 
 export const CondominiumMemberships = () => {
     const [first, setFirst] = useState<number>(0)
     const rows = 5
+    const navigator = useNavigate();
 
     const onPageChange = (event: PaginatorPageChangeEvent) => {
         setFirst(event.first)
@@ -15,7 +18,11 @@ export const CondominiumMemberships = () => {
     const pageItems = condominiums.slice(first, first + rows)
     const fillers = Math.max(0, rows - pageItems.length)
 
-    const noMembershipsText = <p>Você ainda não possui condomínios vinculados.</p>
+    const noMembershipsText = (
+        <div className="mx-auto mt-5">
+            <p className="text-gray-500">Você ainda não possui condomínios vinculados.</p>
+        </div>
+    )
 
     const condominiumsList = (
         <>
@@ -60,18 +67,26 @@ export const CondominiumMemberships = () => {
                 ))}
             </div>
             <Paginator
-                className="condo-memberships-paginator mt-1"
+                className="mt-1"
                 first={first}
                 rows={rows}
                 totalRecords={condominiums.length}
                 onPageChange={onPageChange} />
+            
         </>
     )
 
     return (
-        <div className='flex w-full flex-col gap-2'>
-            {condominiums.length === 0 ? noMembershipsText : condominiumsList}
-        </div>
+        <>
+            <div className='flex w-full flex-col gap-2'>
+                <div className="flex flex-row justify-between">
+                    <p className='text-2xl my-auto px-3 font-bold border-l-4 border-green-700'>Meus condomínios</p>
+                    <Button onClick={() => navigator({to: "/condominiums/create"})} className="my-5" label="Criar condomínio" outlined severity="success" size="small"/>
+                </div>
+                {condominiums.length === 0 ? noMembershipsText : condominiumsList}
+                <Button link className="mt-3 pb-1" label="Solicitar acesso a um condomínio"/>
+            </div>
+        </>
     )
 
 }
