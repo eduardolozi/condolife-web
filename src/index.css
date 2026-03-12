@@ -84,3 +84,16 @@ html, body, #root {
 .avatar-tiered-menu .menu-item-danger .p-menuitem-content:hover .p-menuitem-icon {
   color: #b91c1c; /* red-700 */
 }
+
+
+.condo-memberships-paginator {
+  flex-wrap: wrap;
+  justify-content: center;
+  row-gap: 0.35rem;
+}
+
+@media (min-width: 640px) {
+  .condo-memberships-paginator {
+    justify-content: flex-start;
+  }
+}
