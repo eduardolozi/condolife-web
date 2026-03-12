@@ -1,6 +1,6 @@
 import { UserManager } from "oidc-client-ts";
 
-const authClient = new UserManager({
+export const authClient = new UserManager({
   authority: "http://localhost:8080/realms/condolife",
   client_id: "condolife-web",
   redirect_uri: "http://localhost:5173/auth/callback",
@@ -9,8 +9,6 @@ const authClient = new UserManager({
   scope: "openid profile email",
 });
 
-const condolifeServer = {
+export const condolifeServer = {
   url: "https://localhost:7288/api"
 };
-
-export {authClient, condolifeServer};

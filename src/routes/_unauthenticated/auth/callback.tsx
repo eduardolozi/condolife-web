@@ -1,4 +1,4 @@
-import { loginCallback } from '@/features/auth/services/AuthService'
+import { loginCallback } from '@/features/auth/services/authService'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useEffect, useRef } from 'react'
 

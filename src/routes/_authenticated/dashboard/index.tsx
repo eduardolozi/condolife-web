@@ -1,4 +1,4 @@
-import { getOrCreateCurrentUser } from '@/features/auth/services/UserService'
+import { getOrCreateCurrentUser } from '@/features/auth/services/userService'
 import type { CurrentUser } from '@/features/auth/types/currentUser'
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'

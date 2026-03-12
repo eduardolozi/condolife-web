@@ -10,7 +10,7 @@ interface AuthenticatedMenubarProps {
     avatarUrl: string | null
 }
 
-function AuthenticatedMenubar ({handleLogout, avatarUrl}: AuthenticatedMenubarProps) {
+export const AuthenticatedMenubar = ({handleLogout, avatarUrl}: AuthenticatedMenubarProps) => {
     const menu = useRef<TieredMenu>(null)
     
     const items: MenuItem[] = [
@@ -80,5 +80,3 @@ function AuthenticatedMenubar ({handleLogout, avatarUrl}: AuthenticatedMenubarPr
         </div>
     )
 }
-
-export default AuthenticatedMenubar

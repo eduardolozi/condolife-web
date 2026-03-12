@@ -1,5 +1,5 @@
-import { isAuthenticated, logout } from '@/features/auth/services/AuthService'
-import AuthenticatedMenubar from '@/shared/components/AuthenticatedMenubar'
+import { isAuthenticated, logout } from '@/features/auth/services/authService'
+import {AuthenticatedMenubar} from '@/shared/components/AuthenticatedMenubar'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_authenticated')({

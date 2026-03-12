@@ -1,8 +1,8 @@
 import { condolifeServer } from "@/config/dev.config";
-import { getAccessToken } from "@/features/auth/services/AuthService";
+import { getAccessToken } from "@/features/auth/services/authService";
 import axios, { type InternalAxiosRequestConfig } from "axios";
 
-const condolifeApi = axios.create({
+export const condolifeApi = axios.create({
     baseURL: condolifeServer.url,
     withCredentials: false,
     headers: {
@@ -15,5 +15,3 @@ condolifeApi.interceptors.request.use(async (config: InternalAxiosRequestConfig)
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
-
-export {condolifeApi}
