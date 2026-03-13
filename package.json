@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
     "@tanstack/react-router": "^1.161.3",
     "axios": "^1.13.6",
     "oidc-client-ts": "^3.4.1",

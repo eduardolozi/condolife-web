@@ -1,3 +1,4 @@
+import { CondominiumForm } from '@/features/condominiums/components/CondominiumForm'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_authenticated/condominiums/create')({
@@ -5,5 +6,12 @@ export const Route = createFileRoute('/_authenticated/condominiums/create')({
 })
 
 function RouteComponent() {
-  return <div>Hello "/_authenticated/condominiums/Create"!</div>
+  return (
+    <div>
+      <div className='w-2/4 mx-auto'>
+        <CondominiumForm/>
+
+      </div>
+    </div>
+  )
 }

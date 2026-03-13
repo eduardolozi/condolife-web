@@ -1,5 +1,5 @@
 import { condolifeApi } from "@/lib/axios";
-import type { CurrentUser } from "../../users/types/currentUser";
+import type { CurrentUser } from "../../users/types/CurrentUser";
 
 const controllerPath = '/User'
 
