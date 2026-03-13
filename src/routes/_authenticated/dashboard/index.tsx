@@ -1,5 +1,5 @@
 import { getOrCreateCurrentUser } from '@/features/auth/services/userService'
-import type { CurrentUser } from '@/features/auth/types/currentUser'
+import type { CurrentUser } from '@/features/users/types/CurrentUser'
 import { CondominiumMemberships } from '@/features/condominiums/components/CondomiumMemberships'
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'

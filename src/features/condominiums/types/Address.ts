@@ -1,9 +1,10 @@
 export interface Address {
-    country: string,
     state: string,
     city: string,
+    ibge: number,
     postalCode: string,
-    neighborhood: string | null,
+    neighborhood: string,
     street: string,
-    number: string | null
+    number: string,
+    complement: string | null
 }
