@@ -1,31 +1,38 @@
+import { FloatLabel } from "primereact/floatlabel"
 import { InputText } from "primereact/inputtext"
 import { Controller, type Control, type FieldValues, type Path } from "react-hook-form"
 
 export type ControllerInputTextProps<T extends FieldValues> = {
     propertyName: Path<T>,
-    control: Control<T>   
+    control: Control<T>,
+    label: string   
 }
 
 export const ControllerInputText = <T extends FieldValues>({
-    propertyName, control
+    propertyName, control, label
 }: ControllerInputTextProps<T>) => {
     return (
         <Controller
             name={propertyName}
             control={control}
             render={({field, fieldState}) => (
-                <div className="flex flex-col">
-                    <InputText
-                        className="w-full"
-                        value={field.value}
-                        onChange={(e) => field.onChange(e.target.value)}
-                        name={field.name}
-                        onBlur={field.onBlur}
-                        invalid={fieldState.invalid}
-                    />
-                    {fieldState.error && (
-                        <small className="p-error">{fieldState.error.message}</small>
-                    )}
+                <div className="flex flex-col w-full">
+                    <FloatLabel className="w-full">
+                        <InputText
+                            id={propertyName}
+                            className="w-full"
+                            value={field.value}
+                            onChange={(e) => field.onChange(e.target.value)}
+                            name={field.name}
+                            onBlur={field.onBlur}
+                            invalid={fieldState.invalid}
+                        />
+                        <label htmlFor={propertyName}>{label}</label>
+                    </FloatLabel>
+
+                     <small className="p-error pl-3 min-h-5 leading-5" aria-live="polite">
+                        {fieldState.error?.message ?? "\u00A0"}
+                    </small>
                 </div>
                 
             )}
