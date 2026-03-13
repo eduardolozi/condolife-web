@@ -5,7 +5,7 @@ import { Controller, type Control, type FieldValues, type Path } from "react-hoo
 export type ControllerInputTextProps<T extends FieldValues> = {
     propertyName: Path<T>,
     control: Control<T>,
-    label: string   
+    label: string,
 }
 
 export const ControllerInputText = <T extends FieldValues>({

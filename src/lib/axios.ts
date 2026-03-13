@@ -19,7 +19,7 @@ condolifeApi.interceptors.request.use(async (config: InternalAxiosRequestConfig)
 
 
 export const viaCepApi = axios.create({
-    baseURL: "iacep.com.br/ws/",
+    baseURL: "https://viacep.com.br/ws/",
     withCredentials: false
 })
 
