@@ -6,11 +6,12 @@ export type ControllerInputMaskProps<T extends FieldValues> = {
     propertyName: Path<T>,
     control: Control<T>,
     label: string,
-    mask: string
+    mask: string,
+    className?: string
 }
 
 export const ControllerInputMask = <T extends FieldValues>({
-    propertyName, control, label, mask
+    propertyName, control, label, mask, className
 }: ControllerInputMaskProps<T>) => {
     return (
         <Controller
@@ -19,7 +20,7 @@ export const ControllerInputMask = <T extends FieldValues>({
             render={({field, fieldState}) => {
                 const hasValue = !!field.value
                 return (
-                    <div className="flex flex-col w-full">
+                    <div className={className ? `flex w-full flex-col ${className}` : "flex w-full flex-col"}>
                         <FloatLabel className="w-full">
                             <InputMask
                                 id={propertyName}

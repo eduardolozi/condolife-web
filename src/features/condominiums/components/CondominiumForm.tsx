@@ -4,11 +4,11 @@ import { Button } from "primereact/button"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ControllerInputText } from "@/shared/components/ControllerInputText"
 import { ControllerInputMask } from "@/shared/components/ControllerInputMask"
-import { useEffect, useRef } from "react"
+import { useCallback, useEffect, useRef } from "react"
 import { getAddressByPostalCode } from "../services/addressService"
 
 export const CondominiumForm = () => {
-    const {control, setValue, handleSubmit, formState: {errors} } = useForm<CreateCondominiumRequest>({
+    const {control, setValue, setError, clearErrors, handleSubmit } = useForm<CreateCondominiumRequest>({
         resolver: zodResolver(createCondominiumSchema),
         defaultValues: {
             name: "",
@@ -29,6 +29,29 @@ export const CondominiumForm = () => {
     })
     
     const lastPostalCodeRef = useRef<string | null>(null)
+    const handlePostalCodeLookup = useCallback(async (cep: string) => {
+        try {
+            const address = await getAddressByPostalCode(cep)
+            clearErrors("postalCode")
+
+            setValue("street", address.logradouro)
+            setValue("neighborhood", address.bairro)
+            setValue("city", address.localidade)
+            setValue("state", address.uf)
+            clearErrors(["street", "neighborhood", "city", "state"])
+
+        } catch {
+            setValue("street", "")
+            setValue("neighborhood", "")
+            setValue("city", "")
+            setValue("state", "")
+            setError("postalCode", {
+                type: "manual",
+                message: "O CEP informado não encontrou endereço"
+            })
+        }
+    }, [clearErrors, setError, setValue])
+
     useEffect(() => {
         if (!postalCode) return
 
@@ -39,30 +62,15 @@ export const CondominiumForm = () => {
             handlePostalCodeLookup(digits)
         }
 
-    }, [postalCode])
-
-    const handlePostalCodeLookup = async (cep: string) => {
-        try {
-            const address = await getAddressByPostalCode(cep)
-
-            setValue("street", address.logradouro)
-            setValue("neighborhood", address.bairro)
-            setValue("city", address.localidade)
-            setValue("state", address.uf)
-
-        } catch (error) {
-            console.error(error)
-        }
-    }
+    }, [postalCode, handlePostalCodeLookup])
 
     const onSubmit: SubmitHandler<CreateCondominiumRequest> = (data) => {
         console.log(data)
     }
 
     return (
-        
-        <form className="flex pb-6 flex-col gap-5 justify-center items-center border border-gray-300 py-10 rounded-xl shadow" onSubmit={handleSubmit(onSubmit)}>
-            <div className="w-3/5 mb-2 flex flex-col gap-5">
+        <form className="flex w-full flex-col items-center justify-center rounded-xl border border-gray-300 px-4 py-8 shadow sm:px-6 sm:py-10" onSubmit={handleSubmit(onSubmit)}>
+            <div className="mb-2 flex w-full flex-col gap-7">
                 <p className="font-bold mt-0 text-2xl text-center">Registre seu Condomínio</p>
 
                 <ControllerInputText<CreateCondominiumRequest> 
@@ -96,19 +104,19 @@ export const CondominiumForm = () => {
                     label="Número"
                 />
 
-                <div className="flex flex-row justify-start gap-2">
+                <div className="flex flex-col justify-start gap-2 lg:flex-row">
                    <ControllerInputText<CreateCondominiumRequest> 
                         propertyName="city"
                         control={control}
                         label="Cidade"
-                        className="w-2/3"
+                        className="w-full lg:w-2/3"
                     /> 
 
                     <ControllerInputText<CreateCondominiumRequest> 
                         propertyName="state"
                         control={control}
                         label="UF"
-                        className="w-1/10 md:w-1/4 sm:w-1/4"
+                        className="w-full lg:w-1/3"
                     />
                 </div>
 
@@ -119,7 +127,7 @@ export const CondominiumForm = () => {
                 />
             </div>
 
-            <Button className="w-3/5 mb-2" type="submit" label="Criar" severity="success"/>
+            <Button className="mb-2 w-full" type="submit" label="Criar" severity="success"/>
         </form>
     )
 }

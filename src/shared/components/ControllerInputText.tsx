@@ -17,7 +17,7 @@ export const ControllerInputText = <T extends FieldValues>({
             name={propertyName}
             control={control}
             render={({field, fieldState}) => (
-                <div className={className ? "flex flex-col " + className : "flex flex-col"}>
+                <div className={className ? `flex w-full flex-col ${className}` : "flex w-full flex-col"}>
                     <FloatLabel className="w-full">
                         <InputText
                             id={propertyName}
