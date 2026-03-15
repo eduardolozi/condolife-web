@@ -61,8 +61,8 @@ export const CondominiumForm = () => {
 
     return (
         
-        <form className="flex flex-col gap-8 justify-center items-center border border-gray-300 p-10 rounded-xl shadow" onSubmit={handleSubmit(onSubmit)}>
-            <div className="w-3/4 mb-4 flex flex-col gap-5">
+        <form className="flex pb-6 flex-col gap-5 justify-center items-center border border-gray-300 py-10 rounded-xl shadow" onSubmit={handleSubmit(onSubmit)}>
+            <div className="w-3/5 mb-2 flex flex-col gap-5">
                 <p className="font-bold mt-0 text-2xl text-center">Registre seu Condomínio</p>
 
                 <ControllerInputText<CreateCondominiumRequest> 
@@ -96,17 +96,21 @@ export const CondominiumForm = () => {
                     label="Número"
                 />
 
-                <ControllerInputText<CreateCondominiumRequest> 
-                    propertyName="state"
-                    control={control}
-                    label="Estado"
-                />
+                <div className="flex flex-row justify-start gap-2">
+                   <ControllerInputText<CreateCondominiumRequest> 
+                        propertyName="city"
+                        control={control}
+                        label="Cidade"
+                        className="w-2/3"
+                    /> 
 
-                <ControllerInputText<CreateCondominiumRequest> 
-                    propertyName="city"
-                    control={control}
-                    label="Cidade"
-                />
+                    <ControllerInputText<CreateCondominiumRequest> 
+                        propertyName="state"
+                        control={control}
+                        label="UF"
+                        className="w-1/10 md:w-1/4 sm:w-1/4"
+                    />
+                </div>
 
                 <ControllerInputText<CreateCondominiumRequest> 
                     propertyName="complement"
@@ -115,7 +119,7 @@ export const CondominiumForm = () => {
                 />
             </div>
 
-            <Button className="w-3/4" type="submit" label="Criar" severity="success"/>
+            <Button className="w-3/5 mb-2" type="submit" label="Criar" severity="success"/>
         </form>
     )
 }

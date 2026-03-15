@@ -6,17 +6,18 @@ export type ControllerInputTextProps<T extends FieldValues> = {
     propertyName: Path<T>,
     control: Control<T>,
     label: string,
+    className?: string
 }
 
 export const ControllerInputText = <T extends FieldValues>({
-    propertyName, control, label
+    propertyName, control, label, className
 }: ControllerInputTextProps<T>) => {
     return (
         <Controller
             name={propertyName}
             control={control}
             render={({field, fieldState}) => (
-                <div className="flex flex-col w-full">
+                <div className={className ? "flex flex-col " + className : "flex flex-col"}>
                     <FloatLabel className="w-full">
                         <InputText
                             id={propertyName}
