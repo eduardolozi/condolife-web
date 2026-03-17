@@ -37,7 +37,8 @@ export const CondominiumForm = () => {
             setValue("street", address.logradouro)
             setValue("neighborhood", address.bairro)
             setValue("city", address.localidade)
-            setValue("state", address.uf)
+            setValue("state", address.estado)
+            setValue("cityIbgeCode", address.ibge)
             clearErrors(["street", "neighborhood", "city", "state"])
 
         } catch {
@@ -69,9 +70,9 @@ export const CondominiumForm = () => {
     }
 
     return (
-        <form className="flex w-full flex-col items-center justify-center rounded-xl border border-gray-300 px-4 py-8 shadow sm:px-6 sm:py-10" onSubmit={handleSubmit(onSubmit)}>
+        <form className="flex w-full flex-col items-center justify-center rounded-xl border-0 py-8 sm:shadow sm:border sm:border-gray-300 sm:px-6 sm:py-10" onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-2 flex w-full flex-col gap-7">
-                <p className="font-bold mt-0 text-2xl text-center">Registre seu Condomínio</p>
+                <p className="font-bold text-green-900 mt-0 text-2xl text-center">Registre seu Condomínio</p>
 
                 <ControllerInputText<CreateCondominiumRequest> 
                     propertyName="name"
@@ -104,7 +105,7 @@ export const CondominiumForm = () => {
                     label="Número"
                 />
 
-                <div className="flex flex-col justify-start gap-2 lg:flex-row">
+                <div className="flex flex-col gap-7 justify-start md:gap-2 md:flex-row">
                    <ControllerInputText<CreateCondominiumRequest> 
                         propertyName="city"
                         control={control}
@@ -115,7 +116,7 @@ export const CondominiumForm = () => {
                     <ControllerInputText<CreateCondominiumRequest> 
                         propertyName="state"
                         control={control}
-                        label="UF"
+                        label="Estado"
                         className="w-full lg:w-1/3"
                     />
                 </div>
@@ -123,11 +124,11 @@ export const CondominiumForm = () => {
                 <ControllerInputText<CreateCondominiumRequest> 
                     propertyName="complement"
                     control={control}
-                    label="Complemento"
+                    label="Complemento (opcional)"
                 />
             </div>
 
-            <Button className="mb-2 w-full" type="submit" label="Criar" severity="success"/>
+            <Button className="mt-2 w-full" type="submit" label="Criar" severity="success"/>
         </form>
     )
 }

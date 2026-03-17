@@ -8,7 +8,7 @@ export const Route = createFileRoute('/_authenticated/condominiums/create')({
 function RouteComponent() {
   return (
     <div className='flex flex-col items-center justify-center px-4 sm:px-6'>
-      <div className='mt-10 w-full max-w-[640px]'>
+      <div className='sm:mt-10 w-full max-w-160'>
         <CondominiumForm/>
       </div>
     </div>
