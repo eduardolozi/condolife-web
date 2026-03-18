@@ -1,13 +1,15 @@
 import { Tag } from "primereact/tag"
-import { condominiums } from "../types/Condominium"
 import { Paginator } from 'primereact/paginator'
 import type { PaginatorPageChangeEvent } from 'primereact/paginator'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from "primereact/button"
 import { useNavigate } from "@tanstack/react-router"
+import { getCondominiumMemberships } from "@/features/users/services/condominiumMembershipService"
+import { getUserRoleDescription, type CondominiumMembership } from "@/features/users/types/CondominiumMembership"
 
 export const CondominiumMemberships = () => {
     const [first, setFirst] = useState<number>(0)
+    const [memberships, setMemberships] = useState<CondominiumMembership[]>([])
     const rows = 5
     const navigator = useNavigate();
 
@@ -15,7 +17,7 @@ export const CondominiumMemberships = () => {
         setFirst(event.first)
     }
 
-    const pageItems = condominiums.slice(first, first + rows)
+    const pageItems = memberships.slice(first, first + rows)
     const fillers = Math.max(0, rows - pageItems.length)
 
     const noMembershipsText = (
@@ -24,12 +26,20 @@ export const CondominiumMemberships = () => {
         </div>
     )
 
-    const condominiumsList = (
+    useEffect(() => {
+        (
+            async () => {
+                setMemberships(await getCondominiumMemberships())
+            }
+        )()
+    }, [navigator])
+
+    const membershipsList = (
         <>
             <div className="flex min-h-72 flex-col gap-2 sm:min-h-88 lg:min-h-104">
                 {pageItems.map(x => (
                     <div
-                        key={`${x.name}-${x.address.number}`}
+                        key={x.condominiumId}
                         className="flex cursor-pointer flex-col items-start gap-3 rounded-xl border border-gray-200 bg-white p-3 sm:flex-row sm:items-center"
                     >
                         <img
@@ -38,18 +48,18 @@ export const CondominiumMemberships = () => {
                             alt="Foto condominio" />
 
                         <div className="min-w-0 flex-1 flex flex-col gap-1">
-                            <span className="max-w-full truncate font-bold">{x.name}</span>
+                            <span className="max-w-full truncate font-bold">{x.address.condominiumName}</span>
 
                             <div className="flex min-w-0 items-center gap-2">
                                 <i className="pi pi-map-marker text-sm"></i>
                                 <span className="wrap-break-word text-sm text-zinc-600 sm:truncate">
-                                    {x.address.city}, {x.address.state} - {x.address.neighborhood}, {x.address.street}, {x.address.number}
+                                    {x.address.city} - {x.address.stateCode}, {x.address.neighborhood}, CEP: {x.address.postalCode}, {x.address.street}, n° {x.address.number}
                                 </span>
                             </div>
                         </div>
 
                         <Tag
-                            value="Síndico"
+                            value={getUserRoleDescription(x.role)}
                             severity="success"
                             className="self-end px-2 py-1 text-xs sm:self-auto sm:ml-2" />
                     </div>
@@ -70,7 +80,7 @@ export const CondominiumMemberships = () => {
                 className="mt-1"
                 first={first}
                 rows={rows}
-                totalRecords={condominiums.length}
+                totalRecords={memberships.length}
                 onPageChange={onPageChange} />
             
         </>
@@ -83,7 +93,7 @@ export const CondominiumMemberships = () => {
                     <p className='text-2xl my-auto px-3 font-bold border-l-4 border-green-700'>Meus condomínios</p>
                     <Button onClick={() => navigator({to: "/condominiums/create"})} className="my-5" label="Criar condomínio" outlined severity="success" size="small"/>
                 </div>
-                {condominiums.length === 0 ? noMembershipsText : condominiumsList}
+                {memberships.length === 0 ? noMembershipsText : membershipsList}
                 <Button link className="mt-3 pb-1" label="Solicitar acesso a um condomínio"/>
             </div>
         </>

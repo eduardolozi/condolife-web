@@ -18,7 +18,7 @@ function RouteComponent() {
         setUser(await getOrCreateCurrentUser())
       }
     )()
-  })
+  }, [])
 
   return (
     <div className='my-4 flex w-full max-w-190 flex-col rounded-xl border border-gray-300 px-3 pb-4 shadow sm:my-5 sm:px-6 sm:pb-6'>

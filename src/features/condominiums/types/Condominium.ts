@@ -4,5 +4,3 @@ export interface Condominium {
     name: string,
     address: Address
 }
-
-export const condominiums: Condominium[] = []

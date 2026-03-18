@@ -5,5 +5,4 @@ export interface CurrentUser {
     email: string;
     externalId: string;
     userId: number;
-    memberships: CondominiumMembership[]
 }

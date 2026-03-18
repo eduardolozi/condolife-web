@@ -6,18 +6,22 @@ import { ControllerInputText } from "@/shared/components/ControllerInputText"
 import { ControllerInputMask } from "@/shared/components/ControllerInputMask"
 import { useCallback, useEffect, useRef } from "react"
 import { getAddressByPostalCode } from "../services/addressService"
+import { createCondominium } from "../services/condominiumService"
+import { useNavigate } from "@tanstack/react-router"
 
 export const CondominiumForm = () => {
+    const navigator = useNavigate();
+
     const {control, setValue, setError, clearErrors, handleSubmit } = useForm<CreateCondominiumRequest>({
         resolver: zodResolver(createCondominiumSchema),
         defaultValues: {
-            name: "",
+            condominiumName: "",
             postalCode: "",
             street: "",
             neighborhood: "",
             number: "",
-            cityIbgeCode: "",
-            state: "",
+            ibgeCode: "",
+            stateCode: "",
             city: "",
             complement: null
         }
@@ -37,15 +41,15 @@ export const CondominiumForm = () => {
             setValue("street", address.logradouro)
             setValue("neighborhood", address.bairro)
             setValue("city", address.localidade)
-            setValue("state", address.estado)
-            setValue("cityIbgeCode", address.ibge)
-            clearErrors(["street", "neighborhood", "city", "state"])
+            setValue("stateCode", address.uf)
+            setValue("ibgeCode", address.ibge)
+            clearErrors(["street", "neighborhood", "city", "stateCode"])
 
         } catch {
             setValue("street", "")
             setValue("neighborhood", "")
             setValue("city", "")
-            setValue("state", "")
+            setValue("stateCode", "")
             setError("postalCode", {
                 type: "manual",
                 message: "O CEP informado não encontrou endereço"
@@ -65,8 +69,13 @@ export const CondominiumForm = () => {
 
     }, [postalCode, handlePostalCodeLookup])
 
-    const onSubmit: SubmitHandler<CreateCondominiumRequest> = (data) => {
-        console.log(data)
+    const onSubmit: SubmitHandler<CreateCondominiumRequest> = async (data) => {
+        try {
+            await createCondominium(data);
+            navigator({to: '/dashboard'})
+        } catch(e) {
+            console.log(e);
+        }
     }
 
     return (
@@ -75,7 +84,7 @@ export const CondominiumForm = () => {
                 <p className="font-bold text-green-900 mt-0 text-2xl text-center">Registre seu Condomínio</p>
 
                 <ControllerInputText<CreateCondominiumRequest> 
-                    propertyName="name"
+                    propertyName="condominiumName"
                     control={control}
                     label="Nome do condomínio"
                 />
@@ -114,9 +123,9 @@ export const CondominiumForm = () => {
                     /> 
 
                     <ControllerInputText<CreateCondominiumRequest> 
-                        propertyName="state"
+                        propertyName="stateCode"
                         control={control}
-                        label="Estado"
+                        label="UF"
                         className="w-full lg:w-1/3"
                     />
                 </div>
