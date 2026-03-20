@@ -57,3 +57,6 @@ export const attachApiErrorInterceptor = (client: AxiosInstance) => {
     error => Promise.reject(toApiError(error)),
   )
 }
+
+attachApiErrorInterceptor(condolifeApi)
+attachApiErrorInterceptor(viaCepApi)
