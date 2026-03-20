@@ -7,7 +7,7 @@ interface UnauthenticatedMenubarProps {
     handleLogin: () => Promise<void>
 }
 
-function UnauthenticatedMenubar({handleRegister, handleLogin}: UnauthenticatedMenubarProps) {
+export const UnauthenticatedMenubar = ({handleRegister, handleLogin}: UnauthenticatedMenubarProps) => {
     const logo = (
         <div className="flex h-4 max-w-[58vw] items-center overflow-visible sm:h-5 sm:max-w-none md:h-6">
           <img
@@ -41,5 +41,3 @@ function UnauthenticatedMenubar({handleRegister, handleLogin}: UnauthenticatedMe
         </div>
     )
 }
-
-export default UnauthenticatedMenubar

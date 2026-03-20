@@ -1,12 +1,10 @@
 import { condolifeApi } from "@/lib/axios";
-import type { CurrentUser } from "../types/currentUser";
+import type { CurrentUser } from "../../users/types/CurrentUser";
 
 const controllerPath = '/User'
 
-const getOrCreateCurrentUser =  async() => {
+export const getOrCreateCurrentUser =  async() => {
     const endpoint = `${controllerPath}/me`
     var response = await condolifeApi.post<CurrentUser>(endpoint)
     return response.data
 }
-
-export {getOrCreateCurrentUser}

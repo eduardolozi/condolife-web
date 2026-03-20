@@ -1,5 +1,6 @@
-import { getOrCreateCurrentUser } from '@/features/auth/services/UserService'
-import type { CurrentUser } from '@/features/auth/types/currentUser'
+import { getOrCreateCurrentUser } from '@/features/users/services/userService'
+import type { CurrentUser } from '@/features/users/types/CurrentUser'
+import { CondominiumMemberships } from '@/features/condominiums/components/CondomiumMemberships'
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 
@@ -9,7 +10,7 @@ export const Route = createFileRoute('/_authenticated/dashboard/')({
 
 
 function RouteComponent() {
-  const [user, setUser] = useState<CurrentUser>()
+  const [, setUser] = useState<CurrentUser>()
   
   useEffect(() => {
     (
@@ -17,11 +18,11 @@ function RouteComponent() {
         setUser(await getOrCreateCurrentUser())
       }
     )()
-  })
+  }, [])
 
   return (
-    <div>
-      <div>Hello {user?.fullName}!</div>
+    <div className='my-4 flex w-full max-w-190 flex-col rounded-xl border border-gray-300 px-3 pb-4 shadow sm:my-5 sm:px-6 sm:pb-6'>
+      <CondominiumMemberships/>
     </div>
   )
 }

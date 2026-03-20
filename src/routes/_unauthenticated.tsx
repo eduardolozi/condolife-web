@@ -1,5 +1,5 @@
-import UnauthenticatedMenubar from '@/shared/components/UnauthenticatedMenubar'
-import { login, register } from '@/features/auth/services/AuthService'
+import {UnauthenticatedMenubar} from '@/shared/components/UnauthenticatedMenubar'
+import { login, register } from '@/features/auth/services/authService'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_unauthenticated')({

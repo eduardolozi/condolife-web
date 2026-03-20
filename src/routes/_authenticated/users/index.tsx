@@ -1,4 +1,4 @@
-import { logout } from '@/features/auth/services/AuthService'
+import { logout } from '@/features/auth/services/authService'
 import { createFileRoute } from '@tanstack/react-router'
 import { Button } from 'primereact/button'
 

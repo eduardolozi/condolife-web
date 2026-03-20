@@ -1,4 +1,4 @@
-import { Outlet } from "@tanstack/react-router"
+import { Outlet, useNavigate } from "@tanstack/react-router"
 import { Avatar } from "primereact/avatar"
 import { Menubar } from "primereact/menubar"
 import type { MenuItem } from "primereact/menuitem"
@@ -10,8 +10,9 @@ interface AuthenticatedMenubarProps {
     avatarUrl: string | null
 }
 
-function AuthenticatedMenubar ({handleLogout, avatarUrl}: AuthenticatedMenubarProps) {
+export const AuthenticatedMenubar = ({handleLogout, avatarUrl}: AuthenticatedMenubarProps) => {
     const menu = useRef<TieredMenu>(null)
+    const navigator = useNavigate()
     
     const items: MenuItem[] = [
     {
@@ -50,7 +51,7 @@ function AuthenticatedMenubar ({handleLogout, avatarUrl}: AuthenticatedMenubarPr
     }
 
     const logo = (
-    <div className="flex flex-row h-4 max-w-[58vw] items-center gap-1.5 overflow-visible sm:h-5 sm:max-w-none sm:gap-2 md:h-6">
+    <div onClick={() => navigator({to: '/dashboard'})} className="hover:cursor-pointer flex flex-row h-4 max-w-[58vw] items-center gap-1.5 overflow-visible sm:h-5 sm:max-w-none sm:gap-2 md:h-6">
         <img
             src="/logo-definitiva.png"
             className="h-16 w-auto object-contain"
@@ -73,12 +74,10 @@ function AuthenticatedMenubar ({handleLogout, avatarUrl}: AuthenticatedMenubarPr
 
     return (
         <div className="flex flex-col">
-            <Menubar className="landing-menubar h-20 pr-10 pl-5 py-3 mb-8" start={logo} end={end} />
+            <Menubar className="landing-menubar h-20 pr-10 pl-5 py-3 mb-2" start={logo} end={end} />
             <div className='mx-7'>
                 <Outlet/>
             </div>
         </div>
     )
 }
-
-export default AuthenticatedMenubar
