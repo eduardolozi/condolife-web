@@ -8,9 +8,12 @@ import { useCallback, useEffect, useRef } from "react"
 import { getAddressByPostalCode } from "../services/addressService"
 import { createCondominium } from "../services/condominiumService"
 import { useNavigate } from "@tanstack/react-router"
+import { useApiErrorDialog } from "@/shared/hooks/useApiErrorDialog"
+import { ErrorDialog } from "@/shared/components/ErrorDialog"
 
 export const CondominiumForm = () => {
     const navigator = useNavigate();
+    const {error, hideError, showError, visible} = useApiErrorDialog()
 
     const {control, setValue, setError, clearErrors, handleSubmit } = useForm<CreateCondominiumRequest>({
         resolver: zodResolver(createCondominiumSchema),
@@ -74,7 +77,7 @@ export const CondominiumForm = () => {
             await createCondominium(data);
             navigator({to: '/dashboard'})
         } catch(e) {
-            console.log(e);
+            showError(e)
         }
     }
 
@@ -138,6 +141,12 @@ export const CondominiumForm = () => {
             </div>
 
             <Button className="mt-2 w-full" type="submit" label="Criar" severity="success"/>
+
+            <ErrorDialog
+                error={error}
+                visible={visible}
+                onHide={hideError}
+            />
         </form>
     )
 }

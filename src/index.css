@@ -84,3 +84,144 @@ html, body, #root {
 .avatar-tiered-menu .menu-item-danger .p-menuitem-content:hover .p-menuitem-icon {
   color: #b91c1c; /* red-700 */
 }
+
+.error-dialog.p-dialog {
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0 14px 34px rgba(16, 24, 40, 0.14);
+  background: #ffffff;
+}
+
+.error-dialog .p-dialog-header {
+  border-bottom: 1px solid #eef2f7;
+  padding: 1rem 1.15rem;
+}
+
+.error-dialog .p-dialog-content {
+  padding: 1rem 1.15rem 1.1rem;
+}
+
+.error-dialog__header-content {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-width: 0;
+}
+
+.error-dialog__icon {
+  color: #dc2626;
+  background: #fef2f2;
+  border-radius: 9999px;
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.error-dialog__titles {
+  min-width: 0;
+}
+
+.error-dialog__title {
+  margin: 0;
+  color: #111827;
+  font-size: 1.02rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.error-dialog__subtitle {
+  margin: 0.2rem 0 0;
+  color: #6b7280;
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.error-dialog__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.error-dialog__message {
+  margin: 0;
+  color: #374151;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.error-dialog__details {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #f9fafb;
+  padding: 0.75rem 0.9rem;
+  max-height: min(32vh, 14rem);
+  overflow-y: auto;
+}
+
+.error-dialog__detail-item {
+  margin: 0;
+  color: #4b5563;
+  line-height: 1.45;
+  padding-left: 1rem;
+  position: relative;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.error-dialog__detail-item + .error-dialog__detail-item {
+  margin-top: 0.45rem;
+}
+
+.error-dialog__detail-item::before {
+  content: "";
+  width: 0.35rem;
+  height: 0.35rem;
+  border-radius: 9999px;
+  background: #9ca3af;
+  position: absolute;
+  left: 0.1rem;
+  top: 0.58rem;
+}
+
+.error-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.error-dialog__close-button {
+  min-width: 7.5rem;
+}
+
+@media (max-width: 640px) {
+  .error-dialog .p-dialog-header {
+    padding: 0.9rem 0.95rem;
+  }
+
+  .error-dialog .p-dialog-content {
+    padding: 0.9rem 0.95rem 1rem;
+  }
+
+  .error-dialog__title {
+    font-size: 0.98rem;
+  }
+
+  .error-dialog__subtitle {
+    font-size: 0.84rem;
+  }
+
+  .error-dialog__message {
+    font-size: 0.95rem;
+  }
+
+  .error-dialog__actions {
+    justify-content: stretch;
+  }
+
+  .error-dialog__close-button {
+    width: 100%;
+  }
+}
