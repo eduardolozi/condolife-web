@@ -23,14 +23,11 @@ function RouteComponent() {
   }, [])
 
   return (
-    // <div className='my-4 flex w-full max-w-190 flex-col rounded-xl border border-gray-300 px-3 pb-4 shadow sm:my-5 sm:px-6 sm:pb-6'>
-    //   <CondominiumMemberships/>
-    // </div>
     <>
       <div className='md:mx-25'>
         <div className='flex flex-col justify-center sm:flex-row sm:justify-between items-center'>
-          <p className='font-bold text-2xl sm:text-4xl'>Meus Condomínios</p>
-          <Button onClick={() => navigator({to: "/condominiums/create"})} className="my-5" label="Criar condomínio" icon='pi pi-plus' iconPos='left' outlined severity="success"/>
+          <p className='font-bold text-2xl sm:text-4xl text-emerald-950'>Meus Condomínios</p>
+          <Button onClick={() => navigator({to: "/condominiums/create"})} className="my-5 bg-emerald-600" label="Criar condomínio" icon='pi pi-plus' iconPos='left'/>
         </div>
         <CondominiumMemberships/>
       </div>
