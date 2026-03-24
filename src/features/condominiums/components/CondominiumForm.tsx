@@ -94,10 +94,6 @@ export const CondominiumForm = () => {
                             Preencha as informações essenciais para iniciar o cadastro.
                         </p>
                     </div>
-                    <div className="rounded-xl border border-white/15 bg-white/10 p-3 text-sm leading-6">
-                        <p className="m-0 font-semibold">Etapa atual</p>
-                        <p className="m-0 mt-1 text-emerald-100/90">Informações gerais</p>
-                    </div>
                 </aside>
 
                 <div className="w-full p-0 sm:p-6 md:p-8">
