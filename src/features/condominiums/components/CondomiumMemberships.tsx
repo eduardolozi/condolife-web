@@ -57,7 +57,7 @@ export const CondominiumMemberships = () => {
                     value={getUserRoleDescription(role)}
                     severity={getUserRoleSeverity(role)}
                 />
-                <Button label="Acessar" text icon='pi pi-arrow-right' iconPos="right" className="!px-0 text-emerald-700 hover:text-emerald-800 font-semibold"/>
+                <Button label="Acessar" text icon='pi pi-arrow-right' iconPos="right" className="px-0! text-emerald-700 hover:text-emerald-800 font-semibold"/>
             </div>
         </>
     )
