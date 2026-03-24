@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { Button } from "primereact/button"
 import { useNavigate } from "@tanstack/react-router"
 import { getCondominiumMemberships } from "@/features/users/services/condominiumMembershipService"
-import { getAddressLine, getUserRoleDescription, type AddressInfo, type CondominiumMembership } from "@/features/users/types/CondominiumMembership"
+import { getAddressLine, getUserRoleDescription, getUserRoleSeverity, type AddressInfo, type CondominiumMembership } from "@/features/users/types/CondominiumMembership"
 import { Card } from "primereact/card"
 import { Divider } from "primereact/divider"
 
@@ -35,10 +35,14 @@ export const CondominiumMemberships = () => {
         )()
     }, [navigator])
     
-    const footer = (
+    const getFooter = (role: string) => (
         <>
             <Divider type="solid" className="mt-0"/>
-            <div className="flex flex-row justify-end items-center">
+            <div className="flex flex-row justify-between items-center">
+                <Tag
+                    value={getUserRoleDescription(role)}
+                    severity={getUserRoleSeverity(role)}
+                />
                 <Button label="Acessar" text icon='pi pi-arrow-right' iconPos="right" className="text-green-800 font-semibold"/>
             </div>
         </>
@@ -62,7 +66,7 @@ export const CondominiumMemberships = () => {
                     header={photoUrl}
                     title={condominium.address.condominiumName}
                     subTitle={getSubtitle(condominium.address)}
-                    footer={footer}/>
+                    footer={getFooter(condominium.role)}/>
             ))}
             
         </div>

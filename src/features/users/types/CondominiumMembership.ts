@@ -14,8 +14,23 @@ const ROLE_DESCRIPTIONS = {
   Dependent: 'Dependente',
 } as const;
 
+
+const ROLE_SEVERITIES = {
+  Syndic: 'success',
+  CondominiumAdministrator: 'success',
+  SubSyndic: 'warning',
+  FiscalCouncil: 'warning',
+  Doorman: 'contrast',
+  Resident: 'contrast',
+  Dependent: 'contrast',
+} as const;
+
 export const getUserRoleDescription = (role: string) => {
     return ROLE_DESCRIPTIONS[role as keyof typeof ROLE_DESCRIPTIONS] ?? role;
+}
+
+export const getUserRoleSeverity = (role: string) => {
+    return ROLE_SEVERITIES[role as keyof typeof ROLE_SEVERITIES] ?? "contrast";
 }
 
 export interface AddressInfo {
