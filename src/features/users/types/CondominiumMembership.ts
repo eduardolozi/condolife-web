@@ -44,5 +44,11 @@ export interface AddressInfo {
 }
 
 export const getAddressLine = (addressInfo: AddressInfo) => {
-    return `${addressInfo.city} - ${addressInfo.stateCode}, ${addressInfo.neighborhood}, CEP: ${addressInfo.postalCode}, ${addressInfo.street}, n° ${addressInfo.number}`
+    return `${addressInfo.city} - ${addressInfo.stateCode}, ${addressInfo.neighborhood}, CEP: ${postalCodeFormatted(addressInfo.postalCode)}, ${addressInfo.street}, n° ${addressInfo.number}`
+}
+
+const postalCodeFormatted = (postalCode: string) => {
+    const firstPart = postalCode.substring(0, 5)
+    const secondPart = postalCode.substring(6, 9)
+    return `${firstPart}-${secondPart}`
 }

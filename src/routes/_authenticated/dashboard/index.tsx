@@ -27,7 +27,7 @@ function RouteComponent() {
       <div className='md:mx-25'>
         <div className='flex flex-col justify-center sm:flex-row sm:justify-between items-center'>
           <p className='font-bold text-2xl sm:text-4xl text-emerald-950'>Meus Condomínios</p>
-          <Button onClick={() => navigator({to: "/condominiums/create"})} className="my-5 bg-emerald-600" label="Criar condomínio" icon='pi pi-plus' iconPos='left'/>
+          <Button onClick={() => navigator({to: "/condominiums/create"})} className="mb-8 sm:mt-5 bg-emerald-600" label="Criar condomínio" icon='pi pi-plus' iconPos='left'/>
         </div>
         <CondominiumMemberships/>
       </div>

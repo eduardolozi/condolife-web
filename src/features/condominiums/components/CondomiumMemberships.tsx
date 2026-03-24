@@ -1,7 +1,7 @@
 import { Tag } from "primereact/tag"
 import { Paginator } from 'primereact/paginator'
 import type { PaginatorPageChangeEvent } from 'primereact/paginator'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Button } from "primereact/button"
 import { useNavigate } from "@tanstack/react-router"
 import { getCondominiumMemberships } from "@/features/users/services/condominiumMembershipService"
@@ -14,9 +14,11 @@ export const CondominiumMemberships = () => {
     const [memberships, setMemberships] = useState<CondominiumMembership[]>([])
     const itemsPerPage = 3
     const navigator = useNavigate();
+    const hasPaginatedRef = useRef(false)
 
     const onPageChange = (event: PaginatorPageChangeEvent) => {
         setFirst(event.first)
+        hasPaginatedRef.current = true
     }
 
     const pageItems = memberships.slice(first, first + itemsPerPage)
@@ -34,6 +36,18 @@ export const CondominiumMemberships = () => {
             }
         )()
     }, [navigator])
+
+    useEffect(() => {
+        if (!hasPaginatedRef.current) return
+
+        requestAnimationFrame(() => {
+            const scrollRoot = document.scrollingElement ?? document.documentElement
+            scrollRoot.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            })
+        })
+    }, [first])
     
     const getFooter = (role: string) => (
         <>
