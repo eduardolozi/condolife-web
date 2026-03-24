@@ -27,3 +27,7 @@ export interface AddressInfo {
     number: string,
     postalCode: string,
 }
+
+export const getAddressLine = (addressInfo: AddressInfo) => {
+    return `${addressInfo.city} - ${addressInfo.stateCode}, ${addressInfo.neighborhood}, CEP: ${addressInfo.postalCode}, ${addressInfo.street}, n° ${addressInfo.number}`
+}
