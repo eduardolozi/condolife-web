@@ -82,65 +82,108 @@ export const CondominiumForm = () => {
     }
 
     return (
-        <form className="flex w-full flex-col items-center justify-center rounded-xl border-0 py-8 sm:shadow sm:border sm:border-gray-300 sm:px-6 sm:py-10" onSubmit={handleSubmit(onSubmit)}>
-            <div className="mb-2 flex w-full flex-col gap-7">
-                <p className="font-bold text-green-900 mt-0 text-2xl text-center">Registre seu Condomínio</p>
+        <form
+            className="w-full overflow-hidden rounded-none border-0 bg-transparent text-gray-800 shadow-none md:rounded-2xl md:border md:border-gray-200 md:bg-white md:shadow-sm"
+            onSubmit={handleSubmit(onSubmit)}
+        >
+            <div className="flex flex-col md:flex-row">
+                <aside className="hidden md:flex md:w-72 lg:w-80 md:shrink-0 md:flex-col md:justify-between bg-linear-to-br from-emerald-800 via-emerald-700 to-emerald-900 p-7 text-white">
+                    <div>
+                        <p className="mb-0 mt-4 text-4xl font-bold leading-10">Novo Condomínio</p>
+                        <p className="mb-0 mt-4 text-base leading-7 text-emerald-100/90">
+                            Preencha as informações essenciais para iniciar o cadastro.
+                        </p>
+                    </div>
+                </aside>
 
-                <ControllerInputText<CreateCondominiumRequest> 
-                    propertyName="condominiumName"
-                    control={control}
-                    label="Nome do condomínio"
-                />
+                <div className="w-full p-0 sm:p-6 md:p-8">
+                    <div className="md:hidden">
+                        <p className="m-0 mt-2 text-2xl font-bold leading-tight text-emerald-950">Novo Condomínio</p>
+                        <p className="m-0 mt-2 text-sm leading-6 text-gray-600">Preencha os dados do condomínio para continuar.</p>
+                    </div>
 
-                <ControllerInputMask
-                    propertyName="postalCode"
-                    control={control}
-                    label="CEP"
-                    mask="99999-999"
-                />
+                    <div className="mt-6 flex flex-col gap-6 md:mt-0">
+                        <section className="rounded-xl border border-gray-100 bg-gray-50/70 p-4 text-gray-800 sm:p-5">
+                            <div className="mb-7 flex items-center gap-2 text-emerald-900">
+                                <i className="pi pi-id-card text-base" />
+                                <p className="m-0 text-lg font-semibold tracking-tight sm:text-xl">Identificação</p>
+                            </div>
+                            <ControllerInputText<CreateCondominiumRequest>
+                                propertyName="condominiumName"
+                                control={control}
+                                label="Nome do condomínio"
+                            />
+                        </section>
 
-                <ControllerInputText<CreateCondominiumRequest> 
-                    propertyName="street"
-                    control={control}
-                    label="Rua"
-                />
+                        <section className="rounded-xl border border-gray-100 bg-gray-50/70 p-4 text-gray-800 sm:p-5">
+                            <div className="mb-7 flex items-center gap-2 text-emerald-900">
+                                <i className="pi pi-map-marker text-base" />
+                                <p className="m-0 text-lg font-semibold tracking-tight sm:text-xl">Localização</p>
+                            </div>
 
-                <ControllerInputText<CreateCondominiumRequest> 
-                    propertyName="neighborhood"
-                    control={control}
-                    label="Bairro"
-                />
+                            <div className="flex flex-col gap-3 sm:gap-4">
+                                <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2">
+                                    <ControllerInputMask
+                                        propertyName="postalCode"
+                                        control={control}
+                                        label="CEP"
+                                        mask="99999-999"
+                                    />
 
-                <ControllerInputText<CreateCondominiumRequest> 
-                    propertyName="number"
-                    control={control}
-                    label="Número"
-                />
+                                    <ControllerInputText<CreateCondominiumRequest>
+                                        propertyName="neighborhood"
+                                        control={control}
+                                        label="Bairro"
+                                    />
+                                </div>
 
-                <div className="flex flex-col gap-7 justify-start md:gap-2 md:flex-row">
-                   <ControllerInputText<CreateCondominiumRequest> 
-                        propertyName="city"
-                        control={control}
-                        label="Cidade"
-                        className="w-full lg:w-2/3"
-                    /> 
+                                <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-[2fr_1fr]">
+                                    <ControllerInputText<CreateCondominiumRequest>
+                                        propertyName="street"
+                                        control={control}
+                                        label="Endereço"
+                                    />
 
-                    <ControllerInputText<CreateCondominiumRequest> 
-                        propertyName="stateCode"
-                        control={control}
-                        label="UF"
-                        className="w-full lg:w-1/3"
-                    />
+                                    <ControllerInputText<CreateCondominiumRequest>
+                                        propertyName="number"
+                                        control={control}
+                                        label="Número"
+                                    />
+                                </div>
+
+                                <ControllerInputText<CreateCondominiumRequest>
+                                    propertyName="complement"
+                                    control={control}
+                                    label="Complemento (opcional)"
+                                />
+
+                                <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-[2fr_1fr]">
+                                    <ControllerInputText<CreateCondominiumRequest>
+                                        propertyName="city"
+                                        control={control}
+                                        label="Cidade"
+                                    />
+
+                                    <ControllerInputText<CreateCondominiumRequest>
+                                        propertyName="stateCode"
+                                        control={control}
+                                        label="UF"
+                                    />
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                    <div className="mt-6 flex w-full justify-end">
+                        <Button
+                            className="w-full sm:w-auto rounded-xl! bg-emerald-700! border-emerald-700! hover:bg-emerald-800! hover:border-emerald-800! px-7! font-semibold!"
+                            type="submit"
+                            label="Criar Condomínio"
+                            severity="success"
+                        />
+                    </div>
                 </div>
-
-                <ControllerInputText<CreateCondominiumRequest> 
-                    propertyName="complement"
-                    control={control}
-                    label="Complemento (opcional)"
-                />
             </div>
-
-            <Button className="mt-2 w-full" type="submit" label="Criar" severity="success"/>
 
             <ErrorDialog
                 error={error}
