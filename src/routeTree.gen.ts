@@ -16,7 +16,7 @@ import { Route as AuthenticatedUsersIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
 import { Route as UnauthenticatedAuthCallbackRouteImport } from './routes/_unauthenticated/auth/callback'
 import { Route as AuthenticatedUsersUserIdRouteImport } from './routes/_authenticated/users/$userId'
-import { Route as AuthenticatedImportsResidentRouteImport } from './routes/_authenticated/imports/resident'
+import { Route as AuthenticatedOnboardingResidentPreRegistrationRouteImport } from './routes/_authenticated/onboarding/resident-pre-registration'
 import { Route as AuthenticatedCondominiumsCreateRouteImport } from './routes/_authenticated/condominiums/create'
 
 const UnauthenticatedRoute = UnauthenticatedRouteImport.update({
@@ -55,10 +55,10 @@ const AuthenticatedUsersUserIdRoute =
     path: '/users/$userId',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedImportsResidentRoute =
-  AuthenticatedImportsResidentRouteImport.update({
-    id: '/imports/resident',
-    path: '/imports/resident',
+const AuthenticatedOnboardingResidentPreRegistrationRoute =
+  AuthenticatedOnboardingResidentPreRegistrationRouteImport.update({
+    id: '/onboarding/resident-pre-registration',
+    path: '/onboarding/resident-pre-registration',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedCondominiumsCreateRoute =
@@ -71,7 +71,7 @@ const AuthenticatedCondominiumsCreateRoute =
 export interface FileRoutesByFullPath {
   '/': typeof UnauthenticatedIndexRoute
   '/condominiums/create': typeof AuthenticatedCondominiumsCreateRoute
-  '/imports/resident': typeof AuthenticatedImportsResidentRoute
+  '/onboarding/resident-pre-registration': typeof AuthenticatedOnboardingResidentPreRegistrationRoute
   '/users/$userId': typeof AuthenticatedUsersUserIdRoute
   '/auth/callback': typeof UnauthenticatedAuthCallbackRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
@@ -80,7 +80,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof UnauthenticatedIndexRoute
   '/condominiums/create': typeof AuthenticatedCondominiumsCreateRoute
-  '/imports/resident': typeof AuthenticatedImportsResidentRoute
+  '/onboarding/resident-pre-registration': typeof AuthenticatedOnboardingResidentPreRegistrationRoute
   '/users/$userId': typeof AuthenticatedUsersUserIdRoute
   '/auth/callback': typeof UnauthenticatedAuthCallbackRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
@@ -92,7 +92,7 @@ export interface FileRoutesById {
   '/_unauthenticated': typeof UnauthenticatedRouteWithChildren
   '/_unauthenticated/': typeof UnauthenticatedIndexRoute
   '/_authenticated/condominiums/create': typeof AuthenticatedCondominiumsCreateRoute
-  '/_authenticated/imports/resident': typeof AuthenticatedImportsResidentRoute
+  '/_authenticated/onboarding/resident-pre-registration': typeof AuthenticatedOnboardingResidentPreRegistrationRoute
   '/_authenticated/users/$userId': typeof AuthenticatedUsersUserIdRoute
   '/_unauthenticated/auth/callback': typeof UnauthenticatedAuthCallbackRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
@@ -103,7 +103,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/condominiums/create'
-    | '/imports/resident'
+    | '/onboarding/resident-pre-registration'
     | '/users/$userId'
     | '/auth/callback'
     | '/dashboard/'
@@ -112,7 +112,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/condominiums/create'
-    | '/imports/resident'
+    | '/onboarding/resident-pre-registration'
     | '/users/$userId'
     | '/auth/callback'
     | '/dashboard'
@@ -123,7 +123,7 @@ export interface FileRouteTypes {
     | '/_unauthenticated'
     | '/_unauthenticated/'
     | '/_authenticated/condominiums/create'
-    | '/_authenticated/imports/resident'
+    | '/_authenticated/onboarding/resident-pre-registration'
     | '/_authenticated/users/$userId'
     | '/_unauthenticated/auth/callback'
     | '/_authenticated/dashboard/'
@@ -186,11 +186,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedUsersUserIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/imports/resident': {
-      id: '/_authenticated/imports/resident'
-      path: '/imports/resident'
-      fullPath: '/imports/resident'
-      preLoaderRoute: typeof AuthenticatedImportsResidentRouteImport
+    '/_authenticated/onboarding/resident-pre-registration': {
+      id: '/_authenticated/onboarding/resident-pre-registration'
+      path: '/onboarding/resident-pre-registration'
+      fullPath: '/onboarding/resident-pre-registration'
+      preLoaderRoute: typeof AuthenticatedOnboardingResidentPreRegistrationRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/condominiums/create': {
@@ -205,7 +205,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteChildren {
   AuthenticatedCondominiumsCreateRoute: typeof AuthenticatedCondominiumsCreateRoute
-  AuthenticatedImportsResidentRoute: typeof AuthenticatedImportsResidentRoute
+  AuthenticatedOnboardingResidentPreRegistrationRoute: typeof AuthenticatedOnboardingResidentPreRegistrationRoute
   AuthenticatedUsersUserIdRoute: typeof AuthenticatedUsersUserIdRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
   AuthenticatedUsersIndexRoute: typeof AuthenticatedUsersIndexRoute
@@ -213,7 +213,8 @@ interface AuthenticatedRouteChildren {
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCondominiumsCreateRoute: AuthenticatedCondominiumsCreateRoute,
-  AuthenticatedImportsResidentRoute: AuthenticatedImportsResidentRoute,
+  AuthenticatedOnboardingResidentPreRegistrationRoute:
+    AuthenticatedOnboardingResidentPreRegistrationRoute,
   AuthenticatedUsersUserIdRoute: AuthenticatedUsersUserIdRoute,
   AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
   AuthenticatedUsersIndexRoute: AuthenticatedUsersIndexRoute,

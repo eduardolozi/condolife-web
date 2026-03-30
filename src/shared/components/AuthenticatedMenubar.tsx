@@ -74,7 +74,7 @@ export const AuthenticatedMenubar = ({handleLogout, avatarUrl}: AuthenticatedMen
 
     return (
         <div className="flex flex-col">
-            <Menubar className="landing-menubar h-20 pr-10 pl-5 py-3 mb-2" start={logo} end={end} />
+            <Menubar className="landing-menubar h-20 pr-10 pl-5 py-3" start={logo} end={end} />
             <div className='mx-7'>
                 <Outlet/>
             </div>

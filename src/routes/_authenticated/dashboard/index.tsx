@@ -4,6 +4,7 @@ import { CondominiumMemberships } from '@/features/condominiums/components/Condo
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import { Button } from 'primereact/button'
+import { PageTitle } from '@/shared/components/PageTitle'
 
 export const Route = createFileRoute('/_authenticated/dashboard/')({
   component: RouteComponent,
@@ -24,12 +25,11 @@ function RouteComponent() {
 
   return (
     <>
-      <div className='md:mx-25'>
-
+      <div>
         <div className='flex flex-col justify-center sm:flex-row sm:justify-between items-center'>
-          <p className='font-bold text-2xl sm:text-4xl text-emerald-950'>Meus Condomínios</p>
+          <PageTitle text="Meus Condomínios"/>
           <Button onClick={() => navigator({to: "/condominiums/create"})}
-            className="w-full sm:w-auto rounded-xl! bg-emerald-700! border-emerald-700! hover:bg-emerald-800! hover:border-emerald-800! px-7! font-semibold!"
+            className="mt-4 w-full sm:w-auto rounded-xl! bg-emerald-700! border-emerald-700! hover:bg-emerald-800! hover:border-emerald-800! px-7! font-semibold!"
             type="submit"
             label="Criar condomínio"
             icon='pi pi-plus'
