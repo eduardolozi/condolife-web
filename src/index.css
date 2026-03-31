@@ -308,3 +308,63 @@ html, body, #root {
 .residents-csv-help--sheet .p-card-content {
   padding: 0;
 }
+
+.authenticated-drawer.p-sidebar {
+  border-right: 1px solid #e5e7eb;
+  box-shadow: 0 18px 40px rgba(16, 24, 40, 0.12);
+  background: #f8fafc;
+}
+
+.authenticated-drawer .p-sidebar-content {
+  padding: 0.5rem;
+}
+
+.authenticated-drawer-link {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  border-radius: 0.75rem;
+  padding: 0.7rem 0.8rem;
+  color: #374151;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+.authenticated-drawer-link:hover {
+  background: #f1f5f9;
+  color: #111827;
+}
+
+.authenticated-drawer-link--active {
+  background: #e8f5ec;
+  color: #0f5132;
+}
+
+.authenticated-mobile-logo-trigger {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  box-shadow: none;
+  outline: none;
+}
+
+.authenticated-drawer-logout.p-button {
+  border-radius: 12px;
+  padding: 0.72rem 0.85rem;
+  border: 1px solid #f04438;
+  color: #b42318;
+  justify-content: center;
+  gap: 0.45rem;
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+.authenticated-drawer-logout.p-button .p-button-icon {
+  margin: 0;
+}
+
+.authenticated-drawer-logout.p-button:hover {
+  background: #fef2f2;
+  color: #912018;
+}

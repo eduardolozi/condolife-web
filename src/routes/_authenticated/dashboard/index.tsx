@@ -1,20 +1,17 @@
-import { getOrCreateCurrentUser } from '@/features/users/services/userService'
+﻿import { getOrCreateCurrentUser } from '@/features/users/services/userService'
 import type { CurrentUser } from '@/features/users/types/CurrentUser'
 import { CondominiumMemberships } from '@/features/condominiums/components/CondomiumMemberships'
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
-import { Button } from 'primereact/button'
 import { PageTitle } from '@/shared/components/PageTitle'
 
 export const Route = createFileRoute('/_authenticated/dashboard/')({
   component: RouteComponent,
 })
 
-
 function RouteComponent() {
   const [, setUser] = useState<CurrentUser>()
-  const navigator = useNavigate()
-  
+
   useEffect(() => {
     (
       async () => {
@@ -26,15 +23,8 @@ function RouteComponent() {
   return (
     <>
       <div>
-        <div className='flex flex-col justify-center sm:flex-row sm:justify-between items-center'>
+        <div className='flex flex-col items-center justify-center'>
           <PageTitle text="Meus Condomínios"/>
-          <Button onClick={() => navigator({to: "/condominiums/create"})}
-            className="mt-4 w-full sm:w-auto rounded-xl! bg-emerald-700! border-emerald-700! hover:bg-emerald-800! hover:border-emerald-800! px-7! font-semibold!"
-            type="submit"
-            label="Criar condomínio"
-            icon='pi pi-plus'
-            iconPos='left'
-          />
         </div>
 
         <CondominiumMemberships/>

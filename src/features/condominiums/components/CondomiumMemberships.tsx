@@ -1,4 +1,4 @@
-import { Tag } from "primereact/tag"
+﻿import { Tag } from "primereact/tag"
 import { Paginator } from 'primereact/paginator'
 import type { PaginatorPageChangeEvent } from 'primereact/paginator'
 import { useEffect, useRef, useState } from 'react'
@@ -13,8 +13,9 @@ export const CondominiumMemberships = () => {
     const [first, setFirst] = useState<number>(0)
     const [memberships, setMemberships] = useState<CondominiumMembership[]>([])
     const itemsPerPage = 3
-    const navigator = useNavigate();
+    const navigator = useNavigate()
     const hasPaginatedRef = useRef(false)
+    const topAnchorRef = useRef<HTMLDivElement | null>(null)
 
     const onPageChange = (event: PaginatorPageChangeEvent) => {
         setFirst(event.first)
@@ -22,12 +23,6 @@ export const CondominiumMemberships = () => {
     }
 
     const pageItems = memberships.slice(first, first + itemsPerPage)
-
-    const noMembershipsText = (
-        <div className="mx-auto mt-6 w-full rounded-2xl border border-gray-200 bg-gray-50/60 px-6 py-8 text-center sm:max-w-xl">
-            <p className="text-sm font-medium text-gray-500 sm:text-base">Você ainda não possui condomínios vinculados.</p>
-        </div>
-    )
 
     useEffect(() => {
         (
@@ -41,20 +36,27 @@ export const CondominiumMemberships = () => {
         if (!hasPaginatedRef.current) return
 
         requestAnimationFrame(() => {
-            const scrollRoot = document.scrollingElement ?? document.documentElement
-            scrollRoot.scrollTo({
+            if (topAnchorRef.current) {
+                topAnchorRef.current.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                })
+                return
+            }
+
+            window.scrollTo({
                 top: 0,
                 behavior: 'smooth'
             })
         })
     }, [first])
-    
+
     const getFooter = (role: string) => (
         <>
             <Divider type="solid" className="my-4! border-gray-100!"/>
-            <div className="flex flex-row justify-center sm:justify-end items-center">
+            <div className="flex flex-row items-center justify-center sm:justify-end">
                 <Tag
-                    className="w-full sm:w-1/3"
+                    className="w-full py-1 text-sm sm:w-1/3"
                     value={getUserRoleDescription(role)}
                     severity={getUserRoleSeverity(role)}
                 />
@@ -63,7 +65,7 @@ export const CondominiumMemberships = () => {
     )
 
     const photoUrl = (
-        <img className="m-0 h-44 w-full rounded-t-2xl object-cover p-0" src='https://static.arboimoveis.com.br/AP0247_FSIM/640x480/189e36cb-9313-4e49-a79e-df19b89c8b1e1689703837460.jpg' alt="" />
+        <img className="m-0 h-44 w-full rounded-t-2xl object-cover p-0" src='https://static.arboimoveis.com.br/AP0247_FSIM/640x480/189e36cb-9313-4e49-a79e-df19b89c8b1e1689703837460.jpg' alt="Fachada do condomínio" />
     )
 
     const getSubtitle = (addressInfo: AddressInfo) => (
@@ -73,33 +75,58 @@ export const CondominiumMemberships = () => {
         </div>
     )
 
+    const addCondominiumCard = (
+        <button
+            type="button"
+            onClick={() => navigator({to: '/condominiums/create'})}
+            className="flex min-h-[18rem] w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed border-emerald-200 bg-emerald-50/45 px-6 py-8 text-center transition-all duration-150 hover:border-emerald-300 hover:bg-emerald-50"
+        >
+            <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-white text-emerald-700 shadow-sm">
+                <i className="pi pi-plus text-2xl" />
+            </div>
+            <p className="m-0 text-2xl font-semibold text-emerald-950">Novo condomínio</p>
+            <p className="m-0 mt-2 max-w-[18rem] text-base leading-6 text-emerald-900/80">
+                Adicione uma nova propriedade para começar a gerenciar.
+            </p>
+        </button>
+    )
+
     const membershipsList = (
-        <div className="w-full flex flex-wrap gap-4 sm:gap-6 mt-8">
-            {pageItems.map(condominium => (
-                <Card className="hover:cursor-pointer w-full lg:w-[calc((100%-3rem)/3)] rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-100 hover:-translate-y-0.5 hover:shadow-md"
+        <div className="mt-2 grid w-full grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {pageItems.map((condominium) => (
+                <Card
+                    key={condominium.condominiumId}
+                    className="h-full w-full cursor-pointer rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-100 hover:-translate-y-0.5 hover:shadow-md"
                     header={photoUrl}
                     onClick={() => navigator({to: `/condominiums/${condominium.condominiumId}`})}
                     title={condominium.address.condominiumName}
                     subTitle={getSubtitle(condominium.address)}
-                    footer={getFooter(condominium.role)}/>
+                    footer={getFooter(condominium.role)}
+                />
             ))}
-            
+
+            {addCondominiumCard}
         </div>
     )
 
     return (
         <>
-            <div className='w-full flex flex-col justify-center items-center py-2 sm:py-4'>
-                <div className="w-full flex flex-col justify-center items-center">
-                    {memberships.length === 0 ? noMembershipsText : membershipsList}
-                    <Paginator
-                        className="mt-8 rounded-xl border border-gray-100 bg-white px-1 py-1 shadow-sm"
-                        first={first}
-                        rows={itemsPerPage}
-                        totalRecords={memberships.length}
-                        onPageChange={onPageChange} 
-                    />
+            <div className='flex w-full flex-col items-center justify-center py-2 sm:py-4'>
+                <div ref={topAnchorRef} />
+                <div className="flex w-full flex-col items-center justify-center">
+                    {membershipsList}
+
+                    {memberships.length > itemsPerPage && (
+                        <Paginator
+                            className="mt-8 rounded-xl border border-gray-100 bg-white px-1 py-1 shadow-sm"
+                            first={first}
+                            rows={itemsPerPage}
+                            totalRecords={memberships.length}
+                            onPageChange={onPageChange}
+                        />
+                    )}
                 </div>
+
                 <div className="mt-8 w-full max-w-2xl rounded-2xl border border-emerald-100 bg-emerald-50/60 px-4 py-4 sm:px-5">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         <div className="min-w-0">
@@ -111,12 +138,11 @@ export const CondominiumMemberships = () => {
                             icon="pi pi-send"
                             iconPos="right"
                             rounded
-                            className="w-full sm:w-auto bg-emerald-600 border-emerald-600 hover:bg-emerald-700 hover:border-emerald-700 text-white font-semibold px-4"
+                            className="w-full border-emerald-600 bg-emerald-600 px-4 font-semibold text-white hover:border-emerald-700 hover:bg-emerald-700 sm:w-auto"
                         />
                     </div>
                 </div>
             </div>
         </>
     )
-
 }

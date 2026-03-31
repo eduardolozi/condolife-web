@@ -1,9 +1,12 @@
-import { Outlet, useNavigate } from "@tanstack/react-router"
+import { Link, Outlet, useLocation, useNavigate } from "@tanstack/react-router"
 import { Avatar } from "primereact/avatar"
+import { Button } from "primereact/button"
+import { Divider } from "primereact/divider"
 import { Menubar } from "primereact/menubar"
 import type { MenuItem } from "primereact/menuitem"
+import { Sidebar } from "primereact/sidebar"
 import { TieredMenu } from "primereact/tieredmenu"
-import { useRef } from "react"
+import { useRef, useState } from "react"
 
 interface AuthenticatedMenubarProps {
     handleLogout: () => Promise<void>,
@@ -13,14 +16,21 @@ interface AuthenticatedMenubarProps {
 export const AuthenticatedMenubar = ({handleLogout, avatarUrl}: AuthenticatedMenubarProps) => {
     const menu = useRef<TieredMenu>(null)
     const navigator = useNavigate()
-    
+    const location = useLocation()
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+
+    const navigationItems = [
+        {label: "Dashboard", icon: "pi pi-home", to: "/dashboard"},
+        {label: "Usuarios", icon: "pi pi-users", to: "/users"}
+    ]
+
     const items: MenuItem[] = [
     {
         label: "Meu perfil",
         icon: "pi pi-user"
     },
     {
-        label: "Configurações",
+        label: "Configuracoes",
         icon: "pi pi-cog"
     },
     {
@@ -63,7 +73,7 @@ export const AuthenticatedMenubar = ({handleLogout, avatarUrl}: AuthenticatedMen
             className="h-full w-auto object-contain"
         />
     </div>
-    ) 
+    )
 
     const end = (
         <div className="mr-2">
@@ -73,9 +83,91 @@ export const AuthenticatedMenubar = ({handleLogout, avatarUrl}: AuthenticatedMen
     )
 
     return (
-        <div className="flex flex-col">
-            <Menubar className="landing-menubar h-20 pr-10 pl-5 py-3" start={logo} end={end} />
-            <div className='mx-7'>
+        <div className="flex min-h-screen flex-col">
+            <Sidebar
+                visible={isDrawerOpen}
+                onHide={() => setIsDrawerOpen(false)}
+                className="authenticated-drawer w-[18rem] sm:w-[20rem]"
+                showCloseIcon={false}
+            >
+                <div className="flex h-full flex-col px-2 py-3">
+                    <div className="mb-3 flex items-center gap-3 rounded-xl bg-white px-3 py-2.5 shadow-sm">
+                        <Avatar
+                            image={avatarUrl ?? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHjMqxhyKtGXX33Xss3TcOhMPlc-1OdMIqmw&s"}
+                            size="large"
+                            shape="circle"
+                        />
+                        <div className="min-w-0">
+                            <p className="truncate text-sm font-semibold text-gray-800">Minha conta</p>
+                            <p className="truncate text-xs text-gray-500">Acessar perfil e configuracoes</p>
+                        </div>
+                    </div>
+
+                    <nav className="flex flex-col gap-1">
+                        {navigationItems.map((item) => {
+                            const isActive = location.pathname.startsWith(item.to)
+                            return (
+                                <Link
+                                    key={item.to}
+                                    to={item.to}
+                                    onClick={() => setIsDrawerOpen(false)}
+                                    className={`authenticated-drawer-link ${isActive ? 'authenticated-drawer-link--active' : ''}`}
+                                >
+                                    <i className={`${item.icon} text-sm`} />
+                                    <span>{item.label}</span>
+                                </Link>
+                            )
+                        })}
+                    </nav>
+
+                    <Divider className="my-3" />
+
+                    <Button
+                        label="Sair"
+                        icon="pi pi-sign-out"
+                        text
+                        className="authenticated-drawer-logout w-full"
+                        onClick={async () => {
+                            setIsDrawerOpen(false)
+                            await handleLogout()
+                        }}
+                    />
+                </div>
+            </Sidebar>
+
+            <div className="relative flex h-[4.25rem] items-center justify-center border-b border-gray-100 bg-white px-3 py-2.5 shadow-sm lg:hidden">
+                <Button
+                    icon="pi pi-bars"
+                    rounded
+                    text
+                    aria-label="Abrir menu"
+                    className="absolute left-3"
+                    onClick={() => setIsDrawerOpen(true)}
+                />
+
+                <button
+                    type="button"
+                    onClick={() => navigator({to: '/dashboard'})}
+                    className="authenticated-mobile-logo-trigger flex items-center gap-1.5"
+                >
+                    <img
+                        src="/logo-definitiva.png"
+                        className="h-10 w-auto object-contain"
+                        alt="Logo Condolife principal"
+                    />
+                    <img
+                        src="/titulo.png"
+                        alt="CondoLife"
+                        className="h-4 w-auto object-contain"
+                    />
+                </button>
+            </div>
+
+            <div className="hidden lg:block">
+                <Menubar className="landing-menubar h-20 pr-10 pl-5 py-3" start={logo} end={end} />
+            </div>
+
+            <div className='mx-3 my-3 sm:mx-5 lg:mx-7 lg:my-4'>
                 <Outlet/>
             </div>
         </div>

@@ -33,7 +33,7 @@ function RouteComponent() {
             onClick={handleRegister}
             label="Crie a sua conta"
             size="small"
-            className="mt-3 p-2 text-xl w-2/4 h-12 sm:text-base sm:hidden"
+            className="mt-3 h-11 whitespace-nowrap px-5 text-base font-semibold sm:hidden"
           />
         </section>
       </main>
