@@ -16,8 +16,9 @@ import { Route as AuthenticatedUsersIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
 import { Route as UnauthenticatedAuthCallbackRouteImport } from './routes/_unauthenticated/auth/callback'
 import { Route as AuthenticatedUsersUserIdRouteImport } from './routes/_authenticated/users/$userId'
-import { Route as AuthenticatedOnboardingResidentPreRegistrationRouteImport } from './routes/_authenticated/onboarding/resident-pre-registration'
 import { Route as AuthenticatedCondominiumsCreateRouteImport } from './routes/_authenticated/condominiums/create'
+import { Route as AuthenticatedCondominiumsIdIndexRouteImport } from './routes/_authenticated/condominiums/$id/index'
+import { Route as AuthenticatedCondominiumsIdManagementResidentPreRegistrationRouteImport } from './routes/_authenticated/condominiums/$id/management/resident-pre-registration'
 
 const UnauthenticatedRoute = UnauthenticatedRouteImport.update({
   id: '/_unauthenticated',
@@ -55,36 +56,46 @@ const AuthenticatedUsersUserIdRoute =
     path: '/users/$userId',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedOnboardingResidentPreRegistrationRoute =
-  AuthenticatedOnboardingResidentPreRegistrationRouteImport.update({
-    id: '/onboarding/resident-pre-registration',
-    path: '/onboarding/resident-pre-registration',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
 const AuthenticatedCondominiumsCreateRoute =
   AuthenticatedCondominiumsCreateRouteImport.update({
     id: '/condominiums/create',
     path: '/condominiums/create',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedCondominiumsIdIndexRoute =
+  AuthenticatedCondominiumsIdIndexRouteImport.update({
+    id: '/condominiums/$id/',
+    path: '/condominiums/$id/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedCondominiumsIdManagementResidentPreRegistrationRoute =
+  AuthenticatedCondominiumsIdManagementResidentPreRegistrationRouteImport.update(
+    {
+      id: '/condominiums/$id/management/resident-pre-registration',
+      path: '/condominiums/$id/management/resident-pre-registration',
+      getParentRoute: () => AuthenticatedRoute,
+    } as any,
+  )
 
 export interface FileRoutesByFullPath {
   '/': typeof UnauthenticatedIndexRoute
   '/condominiums/create': typeof AuthenticatedCondominiumsCreateRoute
-  '/onboarding/resident-pre-registration': typeof AuthenticatedOnboardingResidentPreRegistrationRoute
   '/users/$userId': typeof AuthenticatedUsersUserIdRoute
   '/auth/callback': typeof UnauthenticatedAuthCallbackRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/users/': typeof AuthenticatedUsersIndexRoute
+  '/condominiums/$id/': typeof AuthenticatedCondominiumsIdIndexRoute
+  '/condominiums/$id/management/resident-pre-registration': typeof AuthenticatedCondominiumsIdManagementResidentPreRegistrationRoute
 }
 export interface FileRoutesByTo {
   '/': typeof UnauthenticatedIndexRoute
   '/condominiums/create': typeof AuthenticatedCondominiumsCreateRoute
-  '/onboarding/resident-pre-registration': typeof AuthenticatedOnboardingResidentPreRegistrationRoute
   '/users/$userId': typeof AuthenticatedUsersUserIdRoute
   '/auth/callback': typeof UnauthenticatedAuthCallbackRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
+  '/condominiums/$id': typeof AuthenticatedCondominiumsIdIndexRoute
+  '/condominiums/$id/management/resident-pre-registration': typeof AuthenticatedCondominiumsIdManagementResidentPreRegistrationRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -92,42 +103,46 @@ export interface FileRoutesById {
   '/_unauthenticated': typeof UnauthenticatedRouteWithChildren
   '/_unauthenticated/': typeof UnauthenticatedIndexRoute
   '/_authenticated/condominiums/create': typeof AuthenticatedCondominiumsCreateRoute
-  '/_authenticated/onboarding/resident-pre-registration': typeof AuthenticatedOnboardingResidentPreRegistrationRoute
   '/_authenticated/users/$userId': typeof AuthenticatedUsersUserIdRoute
   '/_unauthenticated/auth/callback': typeof UnauthenticatedAuthCallbackRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/_authenticated/users/': typeof AuthenticatedUsersIndexRoute
+  '/_authenticated/condominiums/$id/': typeof AuthenticatedCondominiumsIdIndexRoute
+  '/_authenticated/condominiums/$id/management/resident-pre-registration': typeof AuthenticatedCondominiumsIdManagementResidentPreRegistrationRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/condominiums/create'
-    | '/onboarding/resident-pre-registration'
     | '/users/$userId'
     | '/auth/callback'
     | '/dashboard/'
     | '/users/'
+    | '/condominiums/$id/'
+    | '/condominiums/$id/management/resident-pre-registration'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/condominiums/create'
-    | '/onboarding/resident-pre-registration'
     | '/users/$userId'
     | '/auth/callback'
     | '/dashboard'
     | '/users'
+    | '/condominiums/$id'
+    | '/condominiums/$id/management/resident-pre-registration'
   id:
     | '__root__'
     | '/_authenticated'
     | '/_unauthenticated'
     | '/_unauthenticated/'
     | '/_authenticated/condominiums/create'
-    | '/_authenticated/onboarding/resident-pre-registration'
     | '/_authenticated/users/$userId'
     | '/_unauthenticated/auth/callback'
     | '/_authenticated/dashboard/'
     | '/_authenticated/users/'
+    | '/_authenticated/condominiums/$id/'
+    | '/_authenticated/condominiums/$id/management/resident-pre-registration'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -186,13 +201,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedUsersUserIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/onboarding/resident-pre-registration': {
-      id: '/_authenticated/onboarding/resident-pre-registration'
-      path: '/onboarding/resident-pre-registration'
-      fullPath: '/onboarding/resident-pre-registration'
-      preLoaderRoute: typeof AuthenticatedOnboardingResidentPreRegistrationRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/condominiums/create': {
       id: '/_authenticated/condominiums/create'
       path: '/condominiums/create'
@@ -200,24 +208,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCondominiumsCreateRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/condominiums/$id/': {
+      id: '/_authenticated/condominiums/$id/'
+      path: '/condominiums/$id'
+      fullPath: '/condominiums/$id/'
+      preLoaderRoute: typeof AuthenticatedCondominiumsIdIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/condominiums/$id/management/resident-pre-registration': {
+      id: '/_authenticated/condominiums/$id/management/resident-pre-registration'
+      path: '/condominiums/$id/management/resident-pre-registration'
+      fullPath: '/condominiums/$id/management/resident-pre-registration'
+      preLoaderRoute: typeof AuthenticatedCondominiumsIdManagementResidentPreRegistrationRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
 interface AuthenticatedRouteChildren {
   AuthenticatedCondominiumsCreateRoute: typeof AuthenticatedCondominiumsCreateRoute
-  AuthenticatedOnboardingResidentPreRegistrationRoute: typeof AuthenticatedOnboardingResidentPreRegistrationRoute
   AuthenticatedUsersUserIdRoute: typeof AuthenticatedUsersUserIdRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
   AuthenticatedUsersIndexRoute: typeof AuthenticatedUsersIndexRoute
+  AuthenticatedCondominiumsIdIndexRoute: typeof AuthenticatedCondominiumsIdIndexRoute
+  AuthenticatedCondominiumsIdManagementResidentPreRegistrationRoute: typeof AuthenticatedCondominiumsIdManagementResidentPreRegistrationRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCondominiumsCreateRoute: AuthenticatedCondominiumsCreateRoute,
-  AuthenticatedOnboardingResidentPreRegistrationRoute:
-    AuthenticatedOnboardingResidentPreRegistrationRoute,
   AuthenticatedUsersUserIdRoute: AuthenticatedUsersUserIdRoute,
   AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
   AuthenticatedUsersIndexRoute: AuthenticatedUsersIndexRoute,
+  AuthenticatedCondominiumsIdIndexRoute: AuthenticatedCondominiumsIdIndexRoute,
+  AuthenticatedCondominiumsIdManagementResidentPreRegistrationRoute:
+    AuthenticatedCondominiumsIdManagementResidentPreRegistrationRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(

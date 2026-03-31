@@ -52,12 +52,12 @@ export const CondominiumMemberships = () => {
     const getFooter = (role: string) => (
         <>
             <Divider type="solid" className="my-4! border-gray-100!"/>
-            <div className="flex flex-row justify-between items-center">
+            <div className="flex flex-row justify-center sm:justify-end items-center">
                 <Tag
+                    className="w-full sm:w-1/3"
                     value={getUserRoleDescription(role)}
                     severity={getUserRoleSeverity(role)}
                 />
-                <Button label="Acessar" text icon='pi pi-arrow-right' iconPos="right" className="px-0! text-emerald-700 hover:text-emerald-800 font-semibold"/>
             </div>
         </>
     )
@@ -74,10 +74,11 @@ export const CondominiumMemberships = () => {
     )
 
     const membershipsList = (
-        <div className="w-full flex flex-wrap gap-4 sm:gap-6">
+        <div className="w-full flex flex-wrap gap-4 sm:gap-6 mt-8">
             {pageItems.map(condominium => (
-                <Card className="w-full lg:w-[calc((100%-3rem)/3)] rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-100 hover:-translate-y-0.5 hover:shadow-md"
+                <Card className="hover:cursor-pointer w-full lg:w-[calc((100%-3rem)/3)] rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-100 hover:-translate-y-0.5 hover:shadow-md"
                     header={photoUrl}
+                    onClick={() => navigator({to: `/condominiums/${condominium.condominiumId}`})}
                     title={condominium.address.condominiumName}
                     subTitle={getSubtitle(condominium.address)}
                     footer={getFooter(condominium.role)}/>
