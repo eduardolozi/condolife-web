@@ -12,10 +12,10 @@ import { useApiErrorDialog } from "@/shared/hooks/useApiErrorDialog"
 import { ErrorDialog } from "@/shared/components/ErrorDialog"
 
 export const CondominiumForm = () => {
-    const navigator = useNavigate();
-    const {error, hideError, showError, visible} = useApiErrorDialog()
+    const navigator = useNavigate()
+    const { error, hideError, showError, visible } = useApiErrorDialog()
 
-    const {control, setValue, setError, clearErrors, handleSubmit } = useForm<CreateCondominiumRequest>({
+    const { control, setValue, setError, clearErrors, handleSubmit } = useForm<CreateCondominiumRequest>({
         resolver: zodResolver(createCondominiumSchema),
         defaultValues: {
             condominiumName: "",
@@ -34,7 +34,7 @@ export const CondominiumForm = () => {
         control,
         name: 'postalCode'
     })
-    
+
     const lastPostalCodeRef = useRef<string | null>(null)
     const handlePostalCodeLookup = useCallback(async (cep: string) => {
         try {
@@ -74,9 +74,9 @@ export const CondominiumForm = () => {
 
     const onSubmit: SubmitHandler<CreateCondominiumRequest> = async (data) => {
         try {
-            await createCondominium(data);
-            navigator({to: '/dashboard'})
-        } catch(e) {
+            await createCondominium(data)
+            navigator({ to: '/dashboard' })
+        } catch (e) {
             showError(e)
         }
     }
@@ -87,26 +87,26 @@ export const CondominiumForm = () => {
             onSubmit={handleSubmit(onSubmit)}
         >
             <div className="flex flex-col md:flex-row">
-                <aside className="hidden md:flex md:w-72 lg:w-80 md:shrink-0 md:flex-col md:justify-between bg-linear-to-br from-emerald-800 via-emerald-700 to-emerald-900 p-7 text-white">
+                <aside className="hidden bg-linear-to-br from-emerald-800 via-emerald-700 to-emerald-900 p-6 text-white md:flex md:w-64 md:shrink-0 md:flex-col md:justify-between lg:w-72">
                     <div>
-                        <p className="mb-0 mt-4 text-4xl font-bold leading-10">Novo Condomínio</p>
-                        <p className="mb-0 mt-4 text-base leading-7 text-emerald-100/90">
+                        <p className="mb-0 mt-3 text-3xl font-bold leading-9">Novo Condomínio</p>
+                        <p className="mb-0 mt-3 text-sm leading-6 text-emerald-100/90">
                             Preencha as informações essenciais para iniciar o cadastro.
                         </p>
                     </div>
                 </aside>
 
-                <div className="w-full p-0 sm:p-6 md:p-8">
+                <div className="w-full p-0 sm:p-4 md:p-6">
                     <div className="md:hidden">
-                        <p className="m-0 mt-2 text-2xl font-bold leading-tight text-emerald-950">Novo Condomínio</p>
-                        <p className="m-0 mt-2 text-sm leading-6 text-gray-600">Preencha os dados do condomínio para continuar.</p>
+                        <p className="m-0 mt-2 text-xl font-bold leading-tight text-emerald-950">Novo Condomínio</p>
+                        <p className="m-0 mt-1.5 text-sm leading-6 text-gray-600">Preencha os dados do condomínio para continuar.</p>
                     </div>
 
-                    <div className="mt-6 flex flex-col gap-6 md:mt-0">
-                        <section className="rounded-xl border border-gray-100 bg-gray-50/70 p-4 text-gray-800 sm:p-5">
-                            <div className="mb-7 flex items-center gap-2 text-emerald-900">
+                    <div className="mt-5 flex flex-col gap-4 md:mt-0">
+                        <section className="rounded-xl border border-gray-100 bg-gray-50/70 p-3.5 text-gray-800 sm:p-4">
+                            <div className="mb-5 flex items-center gap-2 text-emerald-900">
                                 <i className="pi pi-id-card text-base" />
-                                <p className="m-0 text-lg font-semibold tracking-tight sm:text-xl">Identificação</p>
+                                <p className="m-0 text-base font-semibold tracking-tight sm:text-lg">Identificação</p>
                             </div>
                             <ControllerInputText<CreateCondominiumRequest>
                                 propertyName="condominiumName"
@@ -115,14 +115,14 @@ export const CondominiumForm = () => {
                             />
                         </section>
 
-                        <section className="rounded-xl border border-gray-100 bg-gray-50/70 p-4 text-gray-800 sm:p-5">
-                            <div className="mb-7 flex items-center gap-2 text-emerald-900">
+                        <section className="rounded-xl border border-gray-100 bg-gray-50/70 p-3.5 text-gray-800 sm:p-4">
+                            <div className="mb-5 flex items-center gap-2 text-emerald-900">
                                 <i className="pi pi-map-marker text-base" />
-                                <p className="m-0 text-lg font-semibold tracking-tight sm:text-xl">Localização</p>
+                                <p className="m-0 text-base font-semibold tracking-tight sm:text-lg">Localização</p>
                             </div>
 
-                            <div className="flex flex-col gap-3 sm:gap-4">
-                                <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2">
+                            <div className="flex flex-col gap-2.5 sm:gap-3">
+                                <div className="grid grid-cols-1 gap-x-3 gap-y-2.5 sm:grid-cols-2">
                                     <ControllerInputMask
                                         propertyName="postalCode"
                                         control={control}
@@ -137,7 +137,7 @@ export const CondominiumForm = () => {
                                     />
                                 </div>
 
-                                <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-[2fr_1fr]">
+                                <div className="grid grid-cols-1 gap-x-3 gap-y-2.5 sm:grid-cols-[2fr_1fr]">
                                     <ControllerInputText<CreateCondominiumRequest>
                                         propertyName="street"
                                         control={control}
@@ -157,7 +157,7 @@ export const CondominiumForm = () => {
                                     label="Complemento (opcional)"
                                 />
 
-                                <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-[2fr_1fr]">
+                                <div className="grid grid-cols-1 gap-x-3 gap-y-2.5 sm:grid-cols-[2fr_1fr]">
                                     <ControllerInputText<CreateCondominiumRequest>
                                         propertyName="city"
                                         control={control}
@@ -174,9 +174,9 @@ export const CondominiumForm = () => {
                         </section>
                     </div>
 
-                    <div className="mt-6 flex w-full justify-end">
+                    <div className="mt-5 flex w-full justify-end">
                         <Button
-                            className="w-full sm:w-auto rounded-xl! bg-emerald-700! border-emerald-700! hover:bg-emerald-800! hover:border-emerald-800! px-7! font-semibold!"
+                            className="w-full rounded-xl! border-emerald-700! bg-emerald-700! px-7! font-semibold! hover:border-emerald-800! hover:bg-emerald-800! sm:w-auto"
                             type="submit"
                             label="Criar Condomínio"
                             severity="success"
