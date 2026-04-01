@@ -46,10 +46,10 @@ export const CondominiumMemberships = ({memberships}: CondominiumMembershipsProp
 
     const getFooter = (role: string) => (
         <>
-            <Divider type="solid" className="mt-0 mb-3 border-gray-100!"/>
+            <Divider type="solid" className="mt-0 mb-2 border-gray-100!"/>
             <div className="flex flex-row items-center justify-center sm:justify-end">
                 <Tag
-                    className="w-full py-1 text-sm sm:w-1/3"
+                    className="w-full py-1 text-xs sm:w-1/3"
                     value={getUserRoleDescription(role)}
                     severity={getUserRoleSeverity(role)}
                 />
@@ -58,7 +58,7 @@ export const CondominiumMemberships = ({memberships}: CondominiumMembershipsProp
     )
 
     const photoUrl = (
-        <img className="m-0 h-44 w-full rounded-t-2xl object-cover p-0" src='https://static.arboimoveis.com.br/AP0247_FSIM/640x480/189e36cb-9313-4e49-a79e-df19b89c8b1e1689703837460.jpg' alt="Fachada do condomínio" />
+        <img className="m-0 h-32 w-full rounded-t-2xl object-cover p-0 sm:h-36" src='https://static.arboimoveis.com.br/AP0247_FSIM/640x480/189e36cb-9313-4e49-a79e-df19b89c8b1e1689703837460.jpg' alt="Fachada do condomínio" />
     )
 
     const getSubtitle = (addressInfo: AddressInfo) => (
@@ -72,13 +72,13 @@ export const CondominiumMemberships = ({memberships}: CondominiumMembershipsProp
         <Link
             to="/condominiums/create"
             preload="intent"
-            className="no-underline hover:cursor-pointer flex min-h-72 w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed border-emerald-200 bg-emerald-50/45 px-6 py-8 text-center transition-all duration-150 hover:border-emerald-300 hover:bg-emerald-50"
+            className="no-underline hover:cursor-pointer flex min-h-56 w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed border-emerald-200 bg-emerald-50/45 px-6 py-6 text-center transition-all duration-150 hover:border-emerald-300 hover:bg-emerald-50"
         >
-            <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-white text-emerald-700 shadow-sm">
+            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-emerald-700 shadow-sm">
                 <i className="pi pi-plus text-2xl" />
             </div>
-            <p className="m-0 text-2xl font-semibold text-emerald-950">Novo condomínio</p>
-            <p className="m-0 mt-2 max-w-[18rem] text-base leading-6 text-emerald-900/80">
+            <p className="m-0 text-xl font-semibold text-emerald-950">Novo condomínio</p>
+            <p className="m-0 mt-1.5 max-w-[18rem] text-sm leading-6 text-emerald-900/80">
                 Adicione uma nova propriedade para começar a gerenciar.
             </p>
         </Link>
@@ -95,7 +95,7 @@ export const CondominiumMemberships = ({memberships}: CondominiumMembershipsProp
                     className="block no-underline"
                 >
                     <Card
-                        className="h-full w-full cursor-pointer rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-100 hover:-translate-y-0.5 hover:shadow-md"
+                        className="condominium-membership-card h-full w-full cursor-pointer rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-100 hover:-translate-y-0.5 hover:shadow-md"
                         header={photoUrl}
                         title={condominium.address.condominiumName}
                         subTitle={getSubtitle(condominium.address)}

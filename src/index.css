@@ -368,3 +368,25 @@ html, body, #root {
   background: #fef2f2;
   color: #912018;
 }
+
+.condominium-membership-card .p-card-body {
+  padding: 0.85rem 1rem 0.75rem;
+}
+
+.condominium-membership-card .p-card-title {
+  margin: 0 0 0.35rem;
+  font-size: 1.25rem;
+  line-height: 1.2;
+}
+
+.condominium-membership-card .p-card-subtitle {
+  margin-bottom: 0rem;
+}
+
+.condominium-membership-card .p-tag {
+  min-height: 1.6rem;
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
