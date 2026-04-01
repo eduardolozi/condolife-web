@@ -23,9 +23,7 @@ function RouteComponent() {
   return (
     <>
       <div>
-        <div className='flex flex-col items-center justify-center'>
-          <PageTitle text="Meus Condomínios"/>
-        </div>
+        <PageTitle text="Meus Condomínios"/>
 
         <CondominiumMemberships/>
       </div>

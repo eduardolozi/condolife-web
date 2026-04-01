@@ -5,7 +5,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { TabPanel, TabView } from 'primereact/tabview'
 import { useState } from 'react'
 
-export const Route = createFileRoute('/_authenticated/condominiums/$id/management/resident-pre-registration')({
+export const Route = createFileRoute('/_authenticated/condominiums/$condominiumId/management/resident-pre-registration')({
   component: RouteComponent,
 })
 

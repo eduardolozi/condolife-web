@@ -79,7 +79,7 @@ export const CondominiumMemberships = () => {
         <button
             type="button"
             onClick={() => navigator({to: '/condominiums/create'})}
-            className="flex min-h-[18rem] w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed border-emerald-200 bg-emerald-50/45 px-6 py-8 text-center transition-all duration-150 hover:border-emerald-300 hover:bg-emerald-50"
+            className="hover:cursor-pointer flex min-h-72 w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed border-emerald-200 bg-emerald-50/45 px-6 py-8 text-center transition-all duration-150 hover:border-emerald-300 hover:bg-emerald-50"
         >
             <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-white text-emerald-700 shadow-sm">
                 <i className="pi pi-plus text-2xl" />
