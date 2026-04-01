@@ -9,9 +9,12 @@ import { getAddressLine, getUserRoleDescription, getUserRoleSeverity, type Addre
 import { Card } from "primereact/card"
 import { Divider } from "primereact/divider"
 
-export const CondominiumMemberships = () => {
+export interface CondominiumMembershipsProps {
+    memberships: CondominiumMembership[]
+}
+
+export const CondominiumMemberships = ({memberships}: CondominiumMembershipsProps) => {
     const [first, setFirst] = useState<number>(0)
-    const [memberships, setMemberships] = useState<CondominiumMembership[]>([])
     const itemsPerPage = 3
     const navigator = useNavigate()
     const hasPaginatedRef = useRef(false)
@@ -23,14 +26,6 @@ export const CondominiumMemberships = () => {
     }
 
     const pageItems = memberships.slice(first, first + itemsPerPage)
-
-    useEffect(() => {
-        (
-            async () => {
-                setMemberships(await getCondominiumMemberships())
-            }
-        )()
-    }, [navigator])
 
     useEffect(() => {
         if (!hasPaginatedRef.current) return

@@ -1,4 +1,5 @@
 import { loginCallback } from '@/features/auth/services/authService'
+import { getOrCreateCurrentUser } from '@/features/users/services/userService'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useEffect, useRef } from 'react'
 
@@ -16,6 +17,7 @@ function RouteComponent() {
         const handleLogin = async () => {
             try {
                 const userLoginCallback = await loginCallback()
+                await getOrCreateCurrentUser()
                 const redirectPath = (userLoginCallback.state as string) || "/"
                 navigate({to: redirectPath})
             }
