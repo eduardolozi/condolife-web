@@ -68,21 +68,23 @@ export const CondominiumMemberships = ({memberships}: CondominiumMembershipsProp
         </div>
     )
 
-    const addCondominiumCard = (
-        <Link
-            to="/condominiums/create"
+    const actionCard = (link: string, icon: string, title: string, description: string) => {
+        return (
+            <Link
+            to={link}
             preload="intent"
             className="no-underline hover:cursor-pointer flex min-h-56 w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed border-emerald-200 bg-emerald-50/45 px-6 py-6 text-center transition-all duration-150 hover:border-emerald-300 hover:bg-emerald-50"
-        >
+            >
             <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-emerald-700 shadow-sm">
-                <i className="pi pi-plus text-2xl" />
+                <i className={`pi ${icon} text-2xl`} />
             </div>
-            <p className="m-0 text-xl font-semibold text-emerald-950">Novo condomínio</p>
+            <p className="m-0 text-xl font-semibold text-emerald-950">{title}</p>
             <p className="m-0 mt-1.5 max-w-[18rem] text-sm leading-6 text-emerald-900/80">
-                Adicione uma nova propriedade para começar a gerenciar.
+                {description}
             </p>
-        </Link>
-    )
+            </Link>
+        )
+    }
 
     const membershipsList = (
         <div className="mt-2 grid w-full grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
@@ -104,7 +106,8 @@ export const CondominiumMemberships = ({memberships}: CondominiumMembershipsProp
                 </Link>
             ))}
 
-            {addCondominiumCard}
+            {actionCard("/condominiums/create", "pi-plus", "Novo condomínio", "Adicione uma nova propriedade para começar a gerenciar.")}
+            {actionCard("/condominiums/create", "pi-send", "Não encontrou seu condomínio?", "Solicite acesso para se vincular e aguarde aprovação.")}
         </div>
     )
 
@@ -124,22 +127,6 @@ export const CondominiumMemberships = ({memberships}: CondominiumMembershipsProp
                             onPageChange={onPageChange}
                         />
                     )}
-                </div>
-
-                <div className="mt-8 w-full max-w-2xl rounded-2xl border border-emerald-100 bg-emerald-50/60 px-4 py-4 sm:px-5">
-                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                        <div className="min-w-0">
-                            <p className="m-0 text-sm font-semibold text-emerald-900">Não encontrou seu condomínio?</p>
-                            <p className="m-0 mt-1 text-sm text-emerald-800/80">Solicite acesso para se vincular e aguarde aprovação.</p>
-                        </div>
-                        <Button
-                            label="Solicitar acesso"
-                            icon="pi pi-send"
-                            iconPos="right"
-                            rounded
-                            className="w-full border-emerald-600 bg-emerald-600 px-4 font-semibold text-white hover:border-emerald-700 hover:bg-emerald-700 sm:w-auto"
-                        />
-                    </div>
                 </div>
             </div>
         </>
