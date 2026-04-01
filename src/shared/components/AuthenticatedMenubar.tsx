@@ -1,4 +1,4 @@
-import { Link, Outlet, useLocation, useNavigate } from "@tanstack/react-router"
+import { Link, Outlet, useLocation } from "@tanstack/react-router"
 import { Avatar } from "primereact/avatar"
 import { Button } from "primereact/button"
 import { Divider } from "primereact/divider"
@@ -15,7 +15,6 @@ interface AuthenticatedMenubarProps {
 
 export const AuthenticatedMenubar = ({handleLogout, avatarUrl}: AuthenticatedMenubarProps) => {
     const menu = useRef<TieredMenu>(null)
-    const navigator = useNavigate()
     const location = useLocation()
     const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
@@ -61,7 +60,7 @@ export const AuthenticatedMenubar = ({handleLogout, avatarUrl}: AuthenticatedMen
     }
 
     const logo = (
-    <div onClick={() => navigator({to: '/dashboard'})} className="hover:cursor-pointer flex flex-row h-4 max-w-[58vw] items-center gap-1.5 overflow-visible sm:h-5 sm:max-w-none sm:gap-2 md:h-6">
+    <Link to="/dashboard" className="hover:cursor-pointer flex flex-row h-4 max-w-[58vw] items-center gap-1.5 overflow-visible sm:h-5 sm:max-w-none sm:gap-2 md:h-6" preload="intent">
         <img
             src="/logo-definitiva.png"
             className="h-16 w-auto object-contain"
@@ -72,7 +71,7 @@ export const AuthenticatedMenubar = ({handleLogout, avatarUrl}: AuthenticatedMen
             alt="CondoLife"
             className="h-full w-auto object-contain"
         />
-    </div>
+    </Link>
     )
 
     const end = (
@@ -135,7 +134,7 @@ export const AuthenticatedMenubar = ({handleLogout, avatarUrl}: AuthenticatedMen
                 </div>
             </Sidebar>
 
-            <div className="relative flex h-[4.25rem] items-center justify-center border-b border-gray-100 bg-white px-3 py-2.5 shadow-sm lg:hidden">
+            <div className="relative flex h-17 items-center justify-center border-b border-gray-100 bg-white px-3 py-2.5 shadow-sm lg:hidden">
                 <Button
                     icon="pi pi-bars"
                     rounded
@@ -145,9 +144,9 @@ export const AuthenticatedMenubar = ({handleLogout, avatarUrl}: AuthenticatedMen
                     onClick={() => setIsDrawerOpen(true)}
                 />
 
-                <button
-                    type="button"
-                    onClick={() => navigator({to: '/dashboard'})}
+                <Link
+                    to="/dashboard"
+                    preload="intent"
                     className="authenticated-mobile-logo-trigger flex items-center gap-1.5"
                 >
                     <img
@@ -160,7 +159,7 @@ export const AuthenticatedMenubar = ({handleLogout, avatarUrl}: AuthenticatedMen
                         alt="CondoLife"
                         className="h-4 w-auto object-contain"
                     />
-                </button>
+                </Link>
             </div>
 
             <div className="hidden lg:block">

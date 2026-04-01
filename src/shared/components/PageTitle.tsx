@@ -30,7 +30,7 @@ export const PageTitle = ({ text, infoContent }: PageTitleProps) => {
         <>
           <button
             type="button"
-            className="inline-flex items-center justify-center w-10 h-10 md:w-9 md:h-9 cursor-pointer p-0 bg-transparent border-0 rounded-full hover:bg-yellow-100/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-yellow-500/70"
+            className="inline-flex items-center justify-center w-10 h-10 md:w-9 md:h-9 cursor-pointer p-0 bg-transparent border-0 rounded-full hover:bg-yellow-100/60 focus-visible:outline focus-visible:outline-yellow-500/70"
             aria-label="Informacoes sobre esta etapa"
             onClick={() => setIsInfoVisible(true)}
           >

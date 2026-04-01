@@ -3,8 +3,7 @@ import { Paginator } from 'primereact/paginator'
 import type { PaginatorPageChangeEvent } from 'primereact/paginator'
 import { useEffect, useRef, useState } from 'react'
 import { Button } from "primereact/button"
-import { useNavigate } from "@tanstack/react-router"
-import { getCondominiumMemberships } from "@/features/users/services/condominiumMembershipService"
+import { Link } from "@tanstack/react-router"
 import { getAddressLine, getUserRoleDescription, getUserRoleSeverity, type AddressInfo, type CondominiumMembership } from "@/features/users/types/CondominiumMembership"
 import { Card } from "primereact/card"
 import { Divider } from "primereact/divider"
@@ -16,7 +15,6 @@ export interface CondominiumMembershipsProps {
 export const CondominiumMemberships = ({memberships}: CondominiumMembershipsProps) => {
     const [first, setFirst] = useState<number>(0)
     const itemsPerPage = 3
-    const navigator = useNavigate()
     const hasPaginatedRef = useRef(false)
     const topAnchorRef = useRef<HTMLDivElement | null>(null)
 
@@ -48,7 +46,7 @@ export const CondominiumMemberships = ({memberships}: CondominiumMembershipsProp
 
     const getFooter = (role: string) => (
         <>
-            <Divider type="solid" className="my-4! border-gray-100!"/>
+            <Divider type="solid" className="mt-0 mb-3 border-gray-100!"/>
             <div className="flex flex-row items-center justify-center sm:justify-end">
                 <Tag
                     className="w-full py-1 text-sm sm:w-1/3"
@@ -71,10 +69,10 @@ export const CondominiumMemberships = ({memberships}: CondominiumMembershipsProp
     )
 
     const addCondominiumCard = (
-        <button
-            type="button"
-            onClick={() => navigator({to: '/condominiums/create'})}
-            className="hover:cursor-pointer flex min-h-72 w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed border-emerald-200 bg-emerald-50/45 px-6 py-8 text-center transition-all duration-150 hover:border-emerald-300 hover:bg-emerald-50"
+        <Link
+            to="/condominiums/create"
+            preload="intent"
+            className="no-underline hover:cursor-pointer flex min-h-72 w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed border-emerald-200 bg-emerald-50/45 px-6 py-8 text-center transition-all duration-150 hover:border-emerald-300 hover:bg-emerald-50"
         >
             <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-white text-emerald-700 shadow-sm">
                 <i className="pi pi-plus text-2xl" />
@@ -83,21 +81,27 @@ export const CondominiumMemberships = ({memberships}: CondominiumMembershipsProp
             <p className="m-0 mt-2 max-w-[18rem] text-base leading-6 text-emerald-900/80">
                 Adicione uma nova propriedade para começar a gerenciar.
             </p>
-        </button>
+        </Link>
     )
 
     const membershipsList = (
         <div className="mt-2 grid w-full grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
             {pageItems.map((condominium) => (
-                <Card
+                <Link
                     key={condominium.condominiumId}
-                    className="h-full w-full cursor-pointer rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-100 hover:-translate-y-0.5 hover:shadow-md"
-                    header={photoUrl}
-                    onClick={() => navigator({to: `/condominiums/${condominium.condominiumId}`})}
-                    title={condominium.address.condominiumName}
-                    subTitle={getSubtitle(condominium.address)}
-                    footer={getFooter(condominium.role)}
-                />
+                    to="/condominiums/$condominiumId"
+                    params={{ condominiumId: String(condominium.condominiumId) }}
+                    preload="intent"
+                    className="block no-underline"
+                >
+                    <Card
+                        className="h-full w-full cursor-pointer rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-100 hover:-translate-y-0.5 hover:shadow-md"
+                        header={photoUrl}
+                        title={condominium.address.condominiumName}
+                        subTitle={getSubtitle(condominium.address)}
+                        footer={getFooter(condominium.role)}
+                    />
+                </Link>
             ))}
 
             {addCondominiumCard}

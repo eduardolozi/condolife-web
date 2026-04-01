@@ -1,7 +1,7 @@
 import { getCondominium } from '@/features/condominiums/services/condominiumService'
 import type { GetCondominiumResponse } from '@/features/condominiums/types/responses/GetCondominiumResponse'
 import { PageTitle } from '@/shared/components/PageTitle'
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { Link, createFileRoute } from '@tanstack/react-router'
 import { Button } from 'primereact/button'
 
 export const Route = createFileRoute('/_authenticated/condominiums/$condominiumId/')({
@@ -15,18 +15,21 @@ export const Route = createFileRoute('/_authenticated/condominiums/$condominiumI
 
 
 function RouteComponent() {
-  const navigator = useNavigate()
-
   const {condominium}: { condominium: GetCondominiumResponse} = Route.useLoaderData()
+  const { condominiumId } = Route.useParams()
 
   return (
     <div>
       <PageTitle text={condominium.condominiumName}/>
       
-      <Button 
-        label='Importação de proprietários'
-        onClick={() => navigator({to: 'management/resident-pre-registration'})}
-      />      
+      <Link
+        to="/condominiums/$condominiumId/management/resident-pre-registration"
+        params={{ condominiumId }}
+        preload="intent"
+        className="inline-block no-underline"
+      >
+        <Button label='Importação de proprietários' />
+      </Link>
     </div>
   )
 }
