@@ -1,8 +1,7 @@
-﻿import { Tag } from "primereact/tag"
+import { Tag } from "primereact/tag"
 import { Paginator } from 'primereact/paginator'
 import type { PaginatorPageChangeEvent } from 'primereact/paginator'
 import { useEffect, useRef, useState } from 'react'
-import { Button } from "primereact/button"
 import { Link } from "@tanstack/react-router"
 import { getAddressLine, getUserRoleDescription, getUserRoleSeverity, type AddressInfo, type CondominiumMembership } from "@/features/users/types/CondominiumMembership"
 import { Card } from "primereact/card"
