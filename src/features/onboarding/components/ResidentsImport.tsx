@@ -1,11 +1,114 @@
-import { useState } from "react"
+﻿import { useMemo, useState } from "react"
 import { ResidentsCsvHelp } from "@/features/onboarding/components/ResidentsCsvHelp"
 import { FileSelector } from "@/shared/components/FileSelector"
 import { Button } from "primereact/button"
 import { Dialog } from "primereact/dialog"
+import { ApiError } from "@/shared/types/ApiError"
+import {
+  downloadResidentPreRegistrationTemplate,
+  importResidentPreRegistration,
+} from "@/features/onboarding/services/residentPreRegistrationService"
 
-export const ResidentsImport = () => {
+interface ResidentsImportProps {
+  condominiumId: number
+}
+
+interface ImportErrorDialogState {
+  visible: boolean
+  message: string
+  stringErrors: string[]
+  validationErrors: Array<{ field?: string; message: string; line?: number }>
+}
+
+export const ResidentsImport = ({ condominiumId }: ResidentsImportProps) => {
   const [isHelpOpen, setIsHelpOpen] = useState(false)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [isDownloadingTemplate, setIsDownloadingTemplate] = useState(false)
+  const [isConfirmingImport, setIsConfirmingImport] = useState(false)
+  const [successDialog, setSuccessDialog] = useState<{ visible: boolean; importedCount: number }>({
+    visible: false,
+    importedCount: 0,
+  })
+  const [errorDialog, setErrorDialog] = useState<ImportErrorDialogState>({
+    visible: false,
+    message: "",
+    stringErrors: [],
+    validationErrors: [],
+  })
+
+  const groupedValidationErrors = useMemo(() => {
+    const grouped = new Map<string, Array<{ field?: string; message: string; line?: number }>>()
+
+    for (const validationError of errorDialog.validationErrors) {
+      const key = typeof validationError.line === "number" ? `Linha ${validationError.line}` : "Geral"
+      if (!grouped.has(key)) {
+        grouped.set(key, [])
+      }
+      grouped.get(key)?.push(validationError)
+    }
+
+    return [...grouped.entries()].sort((a, b) => {
+      if (a[0] === "Geral") return 1
+      if (b[0] === "Geral") return -1
+      return Number(a[0].replace("Linha ", "")) - Number(b[0].replace("Linha ", ""))
+    })
+  }, [errorDialog.validationErrors])
+
+  const handleTemplateDownload = async () => {
+    try {
+      setIsDownloadingTemplate(true)
+      const { blob, filename } = await downloadResidentPreRegistrationTemplate()
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = url
+      link.download = filename
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      URL.revokeObjectURL(url)
+    } catch {
+      setErrorDialog({
+        visible: true,
+        message: "Não foi possível baixar o modelo da planilha.",
+        stringErrors: [],
+        validationErrors: [],
+      })
+    } finally {
+      setIsDownloadingTemplate(false)
+    }
+  }
+
+  const handleImportConfirmation = async () => {
+    if (!selectedFile) return
+
+    try {
+      setIsConfirmingImport(true)
+      const response = await importResidentPreRegistration(condominiumId, selectedFile)
+      setSuccessDialog({
+        visible: true,
+        importedCount: response.importedCount,
+      })
+      setSelectedFile(null)
+    } catch (error) {
+      if (error instanceof ApiError) {
+        setErrorDialog({
+          visible: true,
+          message: error.message,
+          stringErrors: error.errors ?? [],
+          validationErrors: error.validationErrors ?? [],
+        })
+      } else {
+        setErrorDialog({
+          visible: true,
+          message: "Erro inesperado ao importar arquivo.",
+          stringErrors: [],
+          validationErrors: [],
+        })
+      }
+    } finally {
+      setIsConfirmingImport(false)
+    }
+  }
 
   return (
     <div className="flex flex-col gap-3">
@@ -30,10 +133,24 @@ export const ResidentsImport = () => {
       </div>
 
       <FileSelector
-        handleSelect={async () => await new Promise((resolve) => setTimeout(resolve, 1000))}
         maxSize={1000000}
-        supportedExtensions={[".csv"]}
+        supportedExtensions={[".csv", ".txt"]}
+        selectedFile={selectedFile}
+        onFileSelected={setSelectedFile}
       />
+
+      {selectedFile && (
+        <div className="flex justify-end">
+          <Button
+            type="button"
+            label="Confirmar envio"
+            icon="pi pi-check"
+            className="bg-emerald-600 border-emerald-600 hover:bg-emerald-700 hover:border-emerald-700"
+            loading={isConfirmingImport}
+            onClick={handleImportConfirmation}
+          />
+        </div>
+      )}
 
       <div className="flex flex-col md:flex-row justify-between px-4 py-2 rounded-md bg-gray-100">
         <div className="flex items-center justify-center gap-3">
@@ -51,6 +168,8 @@ export const ResidentsImport = () => {
           label="Baixar modelo"
           iconPos="right"
           icon="pi pi-download"
+          loading={isDownloadingTemplate}
+          onClick={handleTemplateDownload}
         />
       </div>
 
@@ -74,6 +193,59 @@ export const ResidentsImport = () => {
         }}
       >
         <ResidentsCsvHelp variant="sheet" />
+      </Dialog>
+
+      <Dialog
+        visible={successDialog.visible}
+        onHide={() => setSuccessDialog({ visible: false, importedCount: 0 })}
+        header="Importação concluída"
+        modal
+        draggable={false}
+        resizable={false}
+        style={{ width: "30rem", maxWidth: "92vw" }}
+      >
+        <p className="m-0 text-gray-700">
+          {successDialog.importedCount} moradores importados com sucesso.
+        </p>
+      </Dialog>
+
+      <Dialog
+        visible={errorDialog.visible}
+        onHide={() => setErrorDialog({ visible: false, message: "", stringErrors: [], validationErrors: [] })}
+        header="Falha na importação"
+        modal
+        draggable={false}
+        resizable={false}
+        style={{ width: "36rem", maxWidth: "95vw" }}
+      >
+        <div className="flex flex-col gap-3">
+          <p className="m-0 text-gray-700">{errorDialog.message}</p>
+
+          {groupedValidationErrors.length > 0 && (
+            <div className="max-h-[46vh] overflow-y-auto rounded-xl border border-gray-200 bg-gray-50 p-3">
+              {groupedValidationErrors.map(([groupLabel, groupErrors]) => (
+                <div key={groupLabel} className="mb-3 last:mb-0">
+                  <p className="m-0 text-sm font-semibold text-gray-900">{groupLabel}</p>
+                  <ul className="m-0 mt-1 pl-5 text-sm text-gray-700">
+                    {groupErrors.map((groupError, index) => (
+                      <li key={`${groupLabel}-${groupError.field ?? "field"}-${groupError.message}-${index}`}>
+                        <span className="font-medium">{groupError.field ?? "Registro"}</span>: {groupError.message}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {errorDialog.stringErrors.length > 0 && (
+            <ul className="m-0 rounded-xl border border-gray-200 bg-gray-50 p-4 pl-8 text-sm text-gray-700">
+              {errorDialog.stringErrors.map((stringError, index) => (
+                <li key={`${stringError}-${index}`}>{stringError}</li>
+              ))}
+            </ul>
+          )}
+        </div>
       </Dialog>
     </div>
   )
