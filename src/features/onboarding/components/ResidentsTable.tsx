@@ -88,14 +88,6 @@ export const ResidentsTable = ({
         ) : (
           <Tag severity="success" value="Válido" />
         )}
-
-        {hasErrors && (
-          <ul className="m-0 pl-4 text-xs text-red-600">
-            {rowErrors.map((errorMessage, index) => (
-              <li key={`${row.line}-${errorMessage}-${index}`}>{errorMessage}</li>
-            ))}
-          </ul>
-        )}
       </div>
     )
   }
@@ -127,7 +119,7 @@ export const ResidentsTable = ({
           style={{ width: "16%" }}
         />
         <Column header="Bloco" body={(row: ResidentTableRow) => renderEditableCell(row, "block")} style={{ width: "10%" }} />
-        <Column header="Validação" body={renderValidation} style={{ width: "23%" }} />
+        <Column header="Situação" body={renderValidation} style={{ width: "23%" }} />
       </DataTable>
     </div>
   )
