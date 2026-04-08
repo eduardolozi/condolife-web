@@ -1,13 +1,19 @@
-﻿import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { ResidentsCsvHelp } from "@/features/onboarding/components/ResidentsCsvHelp"
 import { FileSelector } from "@/shared/components/FileSelector"
 import { Button } from "primereact/button"
 import { Dialog } from "primereact/dialog"
-import { ApiError } from "@/shared/types/ApiError"
+import { ApiError, type ValidationError } from "@/shared/types/ApiError"
 import {
   downloadResidentPreRegistrationTemplate,
   importResidentPreRegistration,
+  type ImportResidentPreRegistrationResponse,
 } from "@/features/onboarding/services/residentPreRegistrationService"
+import {
+  ResidentsTable,
+  type ResidentTableFieldKey,
+  type ResidentTableRow,
+} from "./ResidentsTable"
 
 interface ResidentsImportProps {
   condominiumId: number
@@ -17,7 +23,87 @@ interface ImportErrorDialogState {
   visible: boolean
   message: string
   stringErrors: string[]
-  validationErrors: Array<{ field?: string; message: string; line?: number }>
+  validationErrors: ValidationError[]
+}
+
+const DEFAULT_TEMPLATE_HEADER = "Nome;Cpf;Apartamento;Bloco"
+
+const normalizeFieldName = (value?: string) => {
+  if (!value) return ""
+  return value
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+}
+
+const toFieldKey = (field?: string): ResidentTableFieldKey | null => {
+  const normalized = normalizeFieldName(field)
+
+  if (normalized.includes("name") || normalized.includes("nome")) return "name"
+  if (normalized.includes("cpf")) return "cpf"
+  if (normalized.includes("apartamento") || normalized.includes("apartment") || normalized.includes("apt")) {
+    return "apartment"
+  }
+  if (normalized.includes("bloco") || normalized.includes("block")) return "block"
+
+  return null
+}
+
+const toCellErrorKey = (line: number, field: ResidentTableFieldKey) => `${line}:${field}`
+
+const escapeCsvValue = (value: string) => {
+  if (value.includes(";") || value.includes("\n") || value.includes('"')) {
+    return `"${value.replace(/"/g, '""')}"`
+  }
+
+  return value
+}
+
+const readTemplateHeader = async () => {
+  try {
+    const { blob } = await downloadResidentPreRegistrationTemplate()
+    const content = (await blob.text()).replace(/^\uFEFF/, "")
+    const firstLine = content.split(/\r?\n/).find((line) => line.trim().length > 0)
+    return firstLine?.trim() || DEFAULT_TEMPLATE_HEADER
+  } catch {
+    return DEFAULT_TEMPLATE_HEADER
+  }
+}
+
+const buildCsvFromRows = async (rows: ResidentTableRow[]) => {
+  const header = await readTemplateHeader()
+  const dataLines = rows.map((row) =>
+    [row.name, row.cpf, row.apartment, row.block]
+      .map((value) => escapeCsvValue(value.trim()))
+      .join(";"),
+  )
+
+  return [header, ...dataLines].join("\n")
+}
+
+const mapResponseRowsToTableRows = (response: ImportResidentPreRegistrationResponse): ResidentTableRow[] =>
+  response.rows.map((row) => ({
+    id: `${row.line}-${row.data.cpf}-${row.data.apartment}-${row.data.block ?? ""}`,
+    line: row.line,
+    name: row.data.name ?? "",
+    cpf: row.data.cpf ?? "",
+    apartment: row.data.apartment ?? "",
+    block: row.data.block ?? "",
+  }))
+
+const mapResponseCellErrors = (response: ImportResidentPreRegistrationResponse) => {
+  const mappedCellErrors: Record<string, string> = {}
+
+  for (const row of response.rows) {
+    for (const error of row.errors) {
+      const fieldKey = toFieldKey(error.field)
+      if (!fieldKey) continue
+      mappedCellErrors[toCellErrorKey(row.line, fieldKey)] = error.message
+    }
+  }
+
+  return mappedCellErrors
 }
 
 export const ResidentsImport = ({ condominiumId }: ResidentsImportProps) => {
@@ -25,6 +111,10 @@ export const ResidentsImport = ({ condominiumId }: ResidentsImportProps) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [isDownloadingTemplate, setIsDownloadingTemplate] = useState(false)
   const [isConfirmingImport, setIsConfirmingImport] = useState(false)
+  const [rows, setRows] = useState<ResidentTableRow[]>([])
+  const [cellErrors, setCellErrors] = useState<Record<string, string>>({})
+  const [backendErrorVersion, setBackendErrorVersion] = useState(0)
+  const [processingMessage, setProcessingMessage] = useState<string | null>(null)
   const [successDialog, setSuccessDialog] = useState<{ visible: boolean; importedCount: number }>({
     visible: false,
     importedCount: 0,
@@ -36,8 +126,15 @@ export const ResidentsImport = ({ condominiumId }: ResidentsImportProps) => {
     validationErrors: [],
   })
 
+  useEffect(() => {
+    setRows([])
+    setCellErrors({})
+    setBackendErrorVersion(0)
+    setProcessingMessage(null)
+  }, [selectedFile])
+
   const groupedValidationErrors = useMemo(() => {
-    const grouped = new Map<string, Array<{ field?: string; message: string; line?: number }>>()
+    const grouped = new Map<string, ValidationError[]>()
 
     for (const validationError of errorDialog.validationErrors) {
       const key = typeof validationError.line === "number" ? `Linha ${validationError.line}` : "Geral"
@@ -78,17 +175,65 @@ export const ResidentsImport = ({ condominiumId }: ResidentsImportProps) => {
     }
   }
 
+  const handleCellValueChange = (rowId: string, field: ResidentTableFieldKey, value: string) => {
+    let updatedLine: number | null = null
+
+    setRows((currentRows) =>
+      currentRows.map((row) => {
+        if (row.id !== rowId) return row
+        updatedLine = row.line
+        return { ...row, [field]: value }
+      }),
+    )
+
+    if (updatedLine === null) return
+
+    const key = toCellErrorKey(updatedLine, field)
+    setCellErrors((currentErrors) => {
+      if (!currentErrors[key]) return currentErrors
+      const updatedErrors = { ...currentErrors }
+      delete updatedErrors[key]
+      return updatedErrors
+    })
+  }
+
   const handleImportConfirmation = async () => {
-    if (!selectedFile) return
+    if (!selectedFile && rows.length === 0) return
 
     try {
       setIsConfirmingImport(true)
-      const response = await importResidentPreRegistration(condominiumId, selectedFile)
-      setSuccessDialog({
-        visible: true,
-        importedCount: response.importedCount,
-      })
-      setSelectedFile(null)
+
+      let payloadFile: File
+      if (rows.length > 0) {
+        const csvContent = await buildCsvFromRows(rows)
+        payloadFile = new File(
+          [csvContent],
+          selectedFile?.name ?? "resident-pre-registration.csv",
+          { type: "text/csv" },
+        )
+      } else {
+        payloadFile = selectedFile as File
+      }
+
+      const response = await importResidentPreRegistration(condominiumId, payloadFile)
+
+      if (response.success) {
+        setSuccessDialog({
+          visible: true,
+          importedCount: response.rows.length,
+        })
+        setSelectedFile(null)
+        setRows([])
+        setCellErrors({})
+        setBackendErrorVersion(0)
+        setProcessingMessage(null)
+        return
+      }
+
+      setRows(mapResponseRowsToTableRows(response))
+      setCellErrors(mapResponseCellErrors(response))
+      setBackendErrorVersion((current) => current + 1)
+      setProcessingMessage(response.message || "Arquivo processado com inconsistências.")
     } catch (error) {
       if (error instanceof ApiError) {
         setErrorDialog({
@@ -129,7 +274,9 @@ export const ResidentsImport = ({ condominiumId }: ResidentsImportProps) => {
 
       <div className="border border-blue-800/60 flex flex-col justify-start bg-blue-500/10 px-4 rounded-md">
         <p className="mt-3 font-semibold text-lg mb-0 text-blue-950">Dica rápida</p>
-        <p className="mt-2 text-sm">Para varios proprietarios, utilize a importacao via planilha. Certifique-se de que os campos estejam com os valores corretos.</p>
+        <p className="mt-2 text-sm">
+          Para vários proprietários, utilize a importação via planilha. Certifique-se de que os campos estejam com os valores corretos.
+        </p>
       </div>
 
       <FileSelector
@@ -139,13 +286,28 @@ export const ResidentsImport = ({ condominiumId }: ResidentsImportProps) => {
         onFileSelected={setSelectedFile}
       />
 
-      {selectedFile && (
-        <div className="flex justify-end">
+      {processingMessage && (
+        <div className="rounded-md border border-amber-400 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+          {processingMessage}
+        </div>
+      )}
+
+      {rows.length > 0 && (
+        <ResidentsTable
+          rows={rows}
+          cellErrors={cellErrors}
+          backendErrorVersion={backendErrorVersion}
+          onCellValueChange={handleCellValueChange}
+        />
+      )}
+
+      {(selectedFile || rows.length > 0) && (
+        <div className="flex justify-stretch md:justify-end">
           <Button
             type="button"
             label="Confirmar envio"
             icon="pi pi-check"
-            className="bg-emerald-600 border-emerald-600 hover:bg-emerald-700 hover:border-emerald-700"
+            className="w-full md:w-auto bg-emerald-600 border-emerald-600 hover:bg-emerald-700 hover:border-emerald-700"
             loading={isConfirmingImport}
             onClick={handleImportConfirmation}
           />
@@ -189,7 +351,7 @@ export const ResidentsImport = ({ condominiumId }: ResidentsImportProps) => {
         className="residents-help-mobile-dialog xl:hidden"
         pt={{
           mask: { className: "residents-help-mobile-dialog-mask" },
-          content: { className: "residents-help-mobile-dialog__content" }
+          content: { className: "residents-help-mobile-dialog__content" },
         }}
       >
         <ResidentsCsvHelp variant="sheet" />
@@ -204,9 +366,7 @@ export const ResidentsImport = ({ condominiumId }: ResidentsImportProps) => {
         resizable={false}
         style={{ width: "30rem", maxWidth: "92vw" }}
       >
-        <p className="m-0 text-gray-700">
-          {successDialog.importedCount} moradores importados com sucesso.
-        </p>
+        <p className="m-0 text-gray-700">{successDialog.importedCount} moradores importados com sucesso.</p>
       </Dialog>
 
       <Dialog

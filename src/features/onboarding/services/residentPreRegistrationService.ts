@@ -1,7 +1,27 @@
 import { condolifeApi } from "@/lib/axios"
 
+export interface ImportResidentPreRegistrationRowError {
+  field: string
+  message: string
+}
+
+export interface ImportResidentPreRegistrationRowData {
+  name: string
+  cpf: string
+  apartment: string
+  block: string | null
+}
+
+export interface ImportResidentPreRegistrationRow {
+  line: number
+  data: ImportResidentPreRegistrationRowData
+  errors: ImportResidentPreRegistrationRowError[]
+}
+
 export interface ImportResidentPreRegistrationResponse {
-  importedCount: number
+  success: boolean
+  message: string
+  rows: ImportResidentPreRegistrationRow[]
 }
 
 const controllerPath = "/Management"

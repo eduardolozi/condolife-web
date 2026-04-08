@@ -72,15 +72,15 @@ export const FileSelector = ({ maxSize, selectedFile, onFileSelected, supportedE
       />
 
       {selectedFile && (
-        <div className="mt-4 flex items-center gap-3 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-900">
+        <div className="mt-4 w-full max-w-2xl flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-900">
           <i className="pi pi-file text-emerald-700" />
-          <span className="max-w-[22rem] truncate">{selectedFile.name}</span>
+          <span className="min-w-0 flex-1 w-full truncate">{selectedFile.name}</span>
           <Button
             type="button"
             text
             size="small"
             label="Remover"
-            className="p-0! text-emerald-700"
+            className="p-0! text-emerald-700 self-start sm:self-auto shrink-0"
             onClick={() => {
               onFileSelected(null)
               setErrorMessage(null)

@@ -309,6 +309,53 @@ html, body, #root {
   padding: 0;
 }
 
+.residents-editable-table .p-datatable-wrapper {
+  border-radius: 0.75rem;
+  border: 1px solid #e5e7eb;
+  overflow-x: hidden;
+}
+
+.residents-editable-table .p-datatable-table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.residents-editable-table .p-datatable-thead > tr > th {
+  padding: 0.52rem 0.58rem;
+  font-size: 0.8rem;
+  color: #4b5563;
+  background: #f8fafc;
+}
+
+.residents-editable-table .p-datatable-tbody > tr > td {
+  padding: 0.44rem 0.52rem;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.residents-editable-table__input.p-inputtext {
+  width: 100%;
+  font-size: 0.9rem;
+  padding: 0.4rem 0.52rem;
+}
+
+.residents-editable-table__input--error.p-inputtext {
+  border-color: #ef4444 !important;
+  background: #fef2f2 !important;
+}
+
+@media (max-width: 768px) {
+  .residents-editable-table .p-datatable-thead > tr > th,
+  .residents-editable-table .p-datatable-tbody > tr > td {
+    padding: 0.38rem 0.42rem;
+  }
+
+  .residents-editable-table__input.p-inputtext {
+    font-size: 0.84rem;
+    padding: 0.34rem 0.42rem;
+  }
+}
+
 .authenticated-drawer.p-sidebar {
   border-right: 1px solid #e5e7eb;
   box-shadow: 0 18px 40px rgba(16, 24, 40, 0.12);

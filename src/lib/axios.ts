@@ -22,15 +22,27 @@ export const viaCepApi = axios.create({
   withCredentials: false,
 })
 
-const isValidationError = (item: unknown): item is ValidationError => {
-  if (typeof item !== "object" || item === null) return false
+const normalizeValidationError = (item: unknown): ValidationError | null => {
+  if (typeof item !== "object" || item === null) return null
 
   const record = item as { field?: unknown; message?: unknown; line?: unknown }
-  return (
-    typeof record.message === "string" &&
-    (record.field === undefined || typeof record.field === "string") &&
-    (record.line === undefined || typeof record.line === "number")
-  )
+  if (typeof record.message !== "string" || record.message.trim().length === 0) return null
+
+  const normalizedField = typeof record.field === "string" ? record.field : undefined
+
+  let normalizedLine: number | undefined
+  if (typeof record.line === "number" && Number.isFinite(record.line)) {
+    normalizedLine = record.line
+  } else if (typeof record.line === "string" && record.line.trim().length > 0) {
+    const parsedLine = Number.parseInt(record.line, 10)
+    if (Number.isFinite(parsedLine)) normalizedLine = parsedLine
+  }
+
+  return {
+    field: normalizedField,
+    message: record.message,
+    line: normalizedLine,
+  }
 }
 
 const toApiError = (error: unknown): ApiError => {
@@ -53,11 +65,15 @@ const toApiError = (error: unknown): ApiError => {
     ? data.errors.filter((item: unknown): item is string => typeof item === "string")
     : undefined
 
-  const validationErrors = Array.isArray(data?.validationErrors)
-    ? data.validationErrors.filter(isValidationError)
+  const validationErrorsSource: unknown[] | undefined = Array.isArray(data?.validationErrors)
+    ? data.validationErrors
     : Array.isArray(data?.errors)
-      ? data.errors.filter(isValidationError)
+      ? data.errors
       : undefined
+
+  const validationErrors = validationErrorsSource
+    ?.map(normalizeValidationError)
+    .filter((item: ValidationError | null): item is ValidationError => item !== null)
 
   return new ApiError(
     message,
