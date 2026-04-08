@@ -3,6 +3,7 @@ import { Column } from "primereact/column"
 import { DataTable } from "primereact/datatable"
 import { InputText } from "primereact/inputtext"
 import { Tag } from "primereact/tag"
+import { Button } from "primereact/button"
 
 export type ResidentTableFieldKey = "name" | "cpf" | "apartment" | "block"
 
@@ -20,6 +21,7 @@ interface ResidentsTableProps {
   cellErrors: Record<string, string>
   backendErrorVersion: number
   onCellValueChange: (rowId: string, field: ResidentTableFieldKey, value: string) => void
+  onRowDelete: (rowId: string) => void
 }
 
 const toCellErrorKey = (line: number, field: ResidentTableFieldKey) => `${line}:${field}`
@@ -44,6 +46,7 @@ export const ResidentsTable = ({
   cellErrors,
   backendErrorVersion,
   onCellValueChange,
+  onRowDelete,
 }: ResidentsTableProps) => {
   const tableRows = useMemo(() => rows.map((row) => ({ ...row })), [rows, cellErrors])
 
@@ -83,20 +86,29 @@ export const ResidentsTable = ({
 
     return (
       <div className="flex flex-col gap-1">
-        {hasErrors ? (
-          <Tag severity="danger" value="Com inconsistências" />
-        ) : (
-          <Tag severity="success" value="Válido" />
-        )}
+        {hasErrors ? <Tag severity="danger" value="Com inconsistencias" /> : <Tag severity="success" value="Valido" />}
       </div>
     )
   }
 
+  const renderActions = (row: ResidentTableRow) => (
+    <Button
+      type="button"
+      icon="pi pi-trash"
+      text
+      severity="danger"
+      size="small"
+      rounded
+      aria-label={`Excluir linha ${row.line}`}
+      onClick={() => onRowDelete(row.id)}
+    />
+  )
+
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-3 sm:p-4">
       <div className="mb-3 flex items-center justify-between gap-3">
-        <p className="m-0 text-sm font-semibold text-gray-800">Pré-visualização editável</p>
-        <p className="m-0 text-xs text-gray-500">Corrija os campos com inconsistência e confirme o envio novamente.</p>
+        <p className="m-0 text-sm font-semibold text-gray-800">Pre-visualizacao editavel</p>
+        <p className="m-0 text-xs text-gray-500">Corrija os campos com inconsistencias e confirme o envio novamente.</p>
       </div>
 
       <DataTable
@@ -111,17 +123,17 @@ export const ResidentsTable = ({
         tableStyle={{ width: "100%" }}
       >
         <Column field="line" header="Linha" style={{ width: "6%" }} />
-        <Column header="Nome" body={(row: ResidentTableRow) => renderEditableCell(row, "name")} style={{ width: "27%" }} />
-        <Column header="CPF" body={(row: ResidentTableRow) => renderEditableCell(row, "cpf")} style={{ width: "18%" }} />
+        <Column header="Nome" body={(row: ResidentTableRow) => renderEditableCell(row, "name")} style={{ width: "25%" }} />
+        <Column header="CPF" body={(row: ResidentTableRow) => renderEditableCell(row, "cpf")} style={{ width: "17%" }} />
         <Column
           header="Apartamento"
           body={(row: ResidentTableRow) => renderEditableCell(row, "apartment")}
           style={{ width: "16%" }}
         />
         <Column header="Bloco" body={(row: ResidentTableRow) => renderEditableCell(row, "block")} style={{ width: "10%" }} />
-        <Column header="Situação" body={renderValidation} style={{ width: "23%" }} />
+        <Column header="Situação" body={renderValidation} style={{ width: "20%" }} />
+        <Column header="" body={renderActions} style={{ width: "6%" }} />
       </DataTable>
     </div>
   )
 }
-

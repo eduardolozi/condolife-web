@@ -23,15 +23,15 @@ interface ResidentsCsvHelpProps {
 const csvSteps: CsvStep[] = [
   {
     label: "Nome",
-    header: "Nome Completo do Proprietario",
-    hint: "Preencha o nome completo com atencao. Esse campo ajuda no sucesso do cadastro.",
+    header: "Nome Completo do Proprietário",
+    hint: "Preencha o nome completo com atenção. Esse campo ajuda no sucesso do cadastro.",
     accepted: "Nome e sobrenome completos.",
     restriction: "Evite abreviações.",
     required: true
   },
   {
     label: "CPF",
-    header: "CPF do Proprietario",
+    header: "CPF do Proprietário",
     hint: "O CPF identifica a pessoa de forma única no momento da validação.",
     accepted: "700.402.199-90 ou 70040219990.",
     restriction: "Deve conter 11 dígitos válidos.",
@@ -91,7 +91,7 @@ export const ResidentsCsvHelp = ({ variant = "side" }: ResidentsCsvHelpProps) =>
         <div className="flex items-center justify-between gap-2">
           <p className="m-0 text-sm font-semibold text-gray-900">{currentStep.header}</p>
           <Tag
-            value={currentStep.required ? "Obrigatorio" : "Opcional"}
+            value={currentStep.required ? "Obrigatório" : "Opcional"}
             severity={currentStep.required ? "warning" : "info"}
           />
         </div>
@@ -107,7 +107,7 @@ export const ResidentsCsvHelp = ({ variant = "side" }: ResidentsCsvHelpProps) =>
         <Message
           className="mt-2 w-full"
           severity="warn"
-          text={`Atencao: ${currentStep.restriction}`}
+          text={`Atenção: ${currentStep.restriction}`}
         />
 
         <div className="mt-3 flex gap-2">
@@ -123,7 +123,7 @@ export const ResidentsCsvHelp = ({ variant = "side" }: ResidentsCsvHelpProps) =>
           />
           <Button
             type="button"
-            label={activeStep === csvSteps.length - 1 ? "Concluido" : "Proximo"}
+            label={activeStep === csvSteps.length - 1 ? "Concluído" : "Próximo"}
             size="small"
             disabled={activeStep === csvSteps.length - 1}
             onClick={() => setActiveStep((value) => Math.min(csvSteps.length - 1, value + 1))}
@@ -135,16 +135,16 @@ export const ResidentsCsvHelp = ({ variant = "side" }: ResidentsCsvHelpProps) =>
       <Divider className="my-4" />
 
       <Accordion>
-        <AccordionTab header="Cabecalho esperado">
+        <AccordionTab header="Cabeçalho esperado">
           <p className="m-0 text-sm leading-relaxed">
-            Nome Completo do Proprietario ; CPF do Proprietario ; Numero do apartamento ; Bloco (opcional)
+            Nome;Cpf;Apartamento;Bloco
           </p>
         </AccordionTab>
         <AccordionTab header="Regras gerais">
           <ul className="m-0 pl-5 text-sm leading-relaxed">
             <li>Use ponto e virgula (;) para separar as colunas.</li>
-            <li>CPF pode ser com pontuacao ou apenas digitos.</li>
-            <li>Revise nome completo e numero do apartamento antes do envio.</li>
+            <li>CPF pode ser com pontuação ou apenas dígitos.</li>
+            <li>Revise nome completo e número do apartamento antes do envio.</li>
           </ul>
         </AccordionTab>
       </Accordion>

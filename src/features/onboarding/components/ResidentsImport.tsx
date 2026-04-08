@@ -106,6 +106,25 @@ const mapResponseCellErrors = (response: ImportResidentPreRegistrationResponse) 
   return mappedCellErrors
 }
 
+const remapCellErrorsAfterDelete = (
+  currentErrors: Record<string, string>,
+  deletedLine: number,
+): Record<string, string> => {
+  const updated: Record<string, string> = {}
+
+  for (const [key, message] of Object.entries(currentErrors)) {
+    const [lineText, field] = key.split(":")
+    const line = Number.parseInt(lineText, 10)
+    if (!Number.isFinite(line) || !field) continue
+    if (line === deletedLine) continue
+
+    const targetLine = line > deletedLine ? line - 1 : line
+    updated[`${targetLine}:${field}`] = message
+  }
+
+  return updated
+}
+
 export const ResidentsImport = ({ condominiumId }: ResidentsImportProps) => {
   const [isHelpOpen, setIsHelpOpen] = useState(false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
@@ -195,6 +214,26 @@ export const ResidentsImport = ({ condominiumId }: ResidentsImportProps) => {
       delete updatedErrors[key]
       return updatedErrors
     })
+  }
+
+  const handleRowDelete = (rowId: string) => {
+    let deletedLine: number | null = null
+
+    setRows((currentRows) => {
+      const target = currentRows.find((row) => row.id === rowId)
+      if (!target) return currentRows
+
+      deletedLine = target.line
+
+      return currentRows
+        .filter((row) => row.id !== rowId)
+        .map((row) => (row.line > target.line ? { ...row, line: row.line - 1 } : row))
+    })
+
+    if (deletedLine === null) return
+
+    setCellErrors((currentErrors) => remapCellErrorsAfterDelete(currentErrors, deletedLine as number))
+    setBackendErrorVersion((current) => current + 1)
   }
 
   const handleImportConfirmation = async () => {
@@ -298,6 +337,7 @@ export const ResidentsImport = ({ condominiumId }: ResidentsImportProps) => {
           cellErrors={cellErrors}
           backendErrorVersion={backendErrorVersion}
           onCellValueChange={handleCellValueChange}
+          onRowDelete={handleRowDelete}
         />
       )}
 
