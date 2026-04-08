@@ -106,6 +106,16 @@ const mapResponseCellErrors = (response: ImportResidentPreRegistrationResponse) 
   return mappedCellErrors
 }
 
+const mapResponseRowBackendStatus = (response: ImportResidentPreRegistrationResponse) => {
+  const mappedStatus: Record<number, boolean> = {}
+
+  for (const row of response.rows) {
+    mappedStatus[row.line] = row.errors.length > 0
+  }
+
+  return mappedStatus
+}
+
 const remapCellErrorsAfterDelete = (
   currentErrors: Record<string, string>,
   deletedLine: number,
@@ -132,6 +142,8 @@ export const ResidentsImport = ({ condominiumId }: ResidentsImportProps) => {
   const [isConfirmingImport, setIsConfirmingImport] = useState(false)
   const [rows, setRows] = useState<ResidentTableRow[]>([])
   const [cellErrors, setCellErrors] = useState<Record<string, string>>({})
+  const [rowBackendStatus, setRowBackendStatus] = useState<Record<number, boolean>>({})
+  const [editedRows, setEditedRows] = useState<Record<number, boolean>>({})
   const [backendErrorVersion, setBackendErrorVersion] = useState(0)
   const [processingMessage, setProcessingMessage] = useState<string | null>(null)
   const [successDialog, setSuccessDialog] = useState<{ visible: boolean; importedCount: number }>({
@@ -148,6 +160,8 @@ export const ResidentsImport = ({ condominiumId }: ResidentsImportProps) => {
   useEffect(() => {
     setRows([])
     setCellErrors({})
+    setRowBackendStatus({})
+    setEditedRows({})
     setBackendErrorVersion(0)
     setProcessingMessage(null)
   }, [selectedFile])
@@ -195,24 +209,25 @@ export const ResidentsImport = ({ condominiumId }: ResidentsImportProps) => {
   }
 
   const handleCellValueChange = (rowId: string, field: ResidentTableFieldKey, value: string) => {
-    let updatedLine: number | null = null
+    setRows((currentRows) => {
+      const target = currentRows.find((row) => row.id === rowId)
+      if (!target) return currentRows
 
-    setRows((currentRows) =>
-      currentRows.map((row) => {
-        if (row.id !== rowId) return row
-        updatedLine = row.line
-        return { ...row, [field]: value }
-      }),
-    )
+      const key = toCellErrorKey(target.line, field)
 
-    if (updatedLine === null) return
+      setCellErrors((currentErrors) => {
+        if (!currentErrors[key]) return currentErrors
+        const updatedErrors = { ...currentErrors }
+        delete updatedErrors[key]
+        return updatedErrors
+      })
 
-    const key = toCellErrorKey(updatedLine, field)
-    setCellErrors((currentErrors) => {
-      if (!currentErrors[key]) return currentErrors
-      const updatedErrors = { ...currentErrors }
-      delete updatedErrors[key]
-      return updatedErrors
+      setEditedRows((currentEditedRows) => ({
+        ...currentEditedRows,
+        [target.line]: true,
+      }))
+
+      return currentRows.map((row) => (row.id === rowId ? { ...row, [field]: value } : row))
     })
   }
 
@@ -233,6 +248,28 @@ export const ResidentsImport = ({ condominiumId }: ResidentsImportProps) => {
     if (deletedLine === null) return
 
     setCellErrors((currentErrors) => remapCellErrorsAfterDelete(currentErrors, deletedLine as number))
+    setEditedRows((currentEditedRows) => {
+      const updated: Record<number, boolean> = {}
+
+      for (const [lineText, isEdited] of Object.entries(currentEditedRows)) {
+        const line = Number.parseInt(lineText, 10)
+        if (!Number.isFinite(line) || !isEdited || line === deletedLine) continue
+        updated[line > (deletedLine as number) ? line - 1 : line] = true
+      }
+
+      return updated
+    })
+    setRowBackendStatus((currentStatus) => {
+      const updated: Record<number, boolean> = {}
+
+      for (const [lineText, hasErrors] of Object.entries(currentStatus)) {
+        const line = Number.parseInt(lineText, 10)
+        if (!Number.isFinite(line) || line === deletedLine) continue
+        updated[line > (deletedLine as number) ? line - 1 : line] = hasErrors
+      }
+
+      return updated
+    })
     setBackendErrorVersion((current) => current + 1)
   }
 
@@ -264,6 +301,8 @@ export const ResidentsImport = ({ condominiumId }: ResidentsImportProps) => {
         setSelectedFile(null)
         setRows([])
         setCellErrors({})
+        setRowBackendStatus({})
+        setEditedRows({})
         setBackendErrorVersion(0)
         setProcessingMessage(null)
         return
@@ -271,6 +310,8 @@ export const ResidentsImport = ({ condominiumId }: ResidentsImportProps) => {
 
       setRows(mapResponseRowsToTableRows(response))
       setCellErrors(mapResponseCellErrors(response))
+      setRowBackendStatus(mapResponseRowBackendStatus(response))
+      setEditedRows({})
       setBackendErrorVersion((current) => current + 1)
       setProcessingMessage(response.message || "Arquivo processado com inconsistências.")
     } catch (error) {
@@ -335,6 +376,8 @@ export const ResidentsImport = ({ condominiumId }: ResidentsImportProps) => {
         <ResidentsTable
           rows={rows}
           cellErrors={cellErrors}
+          rowBackendStatus={rowBackendStatus}
+          editedRows={editedRows}
           backendErrorVersion={backendErrorVersion}
           onCellValueChange={handleCellValueChange}
           onRowDelete={handleRowDelete}

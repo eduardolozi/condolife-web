@@ -19,6 +19,8 @@ export interface ResidentTableRow {
 interface ResidentsTableProps {
   rows: ResidentTableRow[]
   cellErrors: Record<string, string>
+  rowBackendStatus: Record<number, boolean>
+  editedRows: Record<number, boolean>
   backendErrorVersion: number
   onCellValueChange: (rowId: string, field: ResidentTableFieldKey, value: string) => void
   onRowDelete: (rowId: string) => void
@@ -32,38 +34,16 @@ const getCellError = (
   cellErrors: Record<string, string>,
 ) => cellErrors[toCellErrorKey(row.line, field)]
 
-const parseCellErrorKey = (key: string): { line: number; field: ResidentTableFieldKey } | null => {
-  const [lineText, fieldText] = key.split(":")
-  const line = Number.parseInt(lineText, 10)
-  if (!Number.isFinite(line)) return null
-  if (!["name", "cpf", "apartment", "block"].includes(fieldText)) return null
-
-  return { line, field: fieldText as ResidentTableFieldKey }
-}
-
 export const ResidentsTable = ({
   rows,
   cellErrors,
+  rowBackendStatus,
+  editedRows,
   backendErrorVersion,
   onCellValueChange,
   onRowDelete,
 }: ResidentsTableProps) => {
   const tableRows = useMemo(() => rows.map((row) => ({ ...row })), [rows, cellErrors])
-
-  const rowErrorsMap = useMemo(() => {
-    const map = new Map<number, string[]>()
-
-    for (const [key, errorMessage] of Object.entries(cellErrors)) {
-      const parsed = parseCellErrorKey(key)
-      if (!parsed) continue
-
-      const current = map.get(parsed.line) ?? []
-      current.push(errorMessage)
-      map.set(parsed.line, current)
-    }
-
-    return map
-  }, [cellErrors])
 
   const renderEditableCell = (row: ResidentTableRow, field: ResidentTableFieldKey) => {
     const fieldError = getCellError(row, field, cellErrors)
@@ -81,12 +61,13 @@ export const ResidentsTable = ({
   }
 
   const renderValidation = (row: ResidentTableRow) => {
-    const rowErrors = rowErrorsMap.get(row.line) ?? []
-    const hasErrors = rowErrors.length > 0
+    if (editedRows[row.line]) return null
+
+    const hasErrors = rowBackendStatus[row.line] === true
 
     return (
       <div className="flex flex-col gap-1">
-        {hasErrors ? <Tag severity="danger" value="Com inconsistencias" /> : <Tag severity="success" value="Valido" />}
+        {hasErrors ? <Tag severity="danger" value="Inconsistente" /> : <Tag severity="success" value="Válido" />}
       </div>
     )
   }
@@ -122,17 +103,13 @@ export const ResidentsTable = ({
         className="residents-editable-table"
         tableStyle={{ width: "100%" }}
       >
-        <Column field="line" header="Linha" style={{ width: "6%" }} />
-        <Column header="Nome" body={(row: ResidentTableRow) => renderEditableCell(row, "name")} style={{ width: "25%" }} />
-        <Column header="CPF" body={(row: ResidentTableRow) => renderEditableCell(row, "cpf")} style={{ width: "17%" }} />
-        <Column
-          header="Apartamento"
-          body={(row: ResidentTableRow) => renderEditableCell(row, "apartment")}
-          style={{ width: "16%" }}
-        />
-        <Column header="Bloco" body={(row: ResidentTableRow) => renderEditableCell(row, "block")} style={{ width: "10%" }} />
-        <Column header="Situação" body={renderValidation} style={{ width: "20%" }} />
-        <Column header="" body={renderActions} style={{ width: "6%" }} />
+        <Column field="line" header="Linha" />
+        <Column header="Nome" body={(row: ResidentTableRow) => renderEditableCell(row, "name")} />
+        <Column header="CPF" body={(row: ResidentTableRow) => renderEditableCell(row, "cpf")} />
+        <Column header="Apartamento" body={(row: ResidentTableRow) => renderEditableCell(row, "apartment")} />
+        <Column header="Bloco" body={(row: ResidentTableRow) => renderEditableCell(row, "block")} />
+        <Column header="Situação" body={renderValidation} />
+        <Column header="" body={renderActions} />
       </DataTable>
     </div>
   )

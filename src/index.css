@@ -317,7 +317,6 @@ html, body, #root {
 
 .residents-editable-table .p-datatable-table {
   width: 100%;
-  table-layout: fixed;
 }
 
 .residents-editable-table .p-datatable-thead > tr > th {
@@ -330,7 +329,8 @@ html, body, #root {
 .residents-editable-table .p-datatable-tbody > tr > td {
   padding: 0.44rem 0.52rem;
   vertical-align: top;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 .residents-editable-table__input.p-inputtext {
@@ -353,6 +353,38 @@ html, body, #root {
   .residents-editable-table__input.p-inputtext {
     font-size: 0.84rem;
     padding: 0.34rem 0.42rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .residents-editable-table.p-datatable.p-datatable-responsive-stack .p-datatable-tbody > tr > td {
+    display: grid;
+    grid-template-columns: minmax(6.8rem, 7.4rem) minmax(0, 1fr);
+    align-items: start;
+    gap: 0.45rem 0.65rem;
+    padding: 0.5rem 0.6rem;
+  }
+
+  .residents-editable-table.p-datatable.p-datatable-responsive-stack .p-datatable-tbody > tr > td .p-column-title {
+    margin: 0;
+    color: #374151;
+    font-weight: 600;
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: normal;
+  }
+
+  .residents-editable-table.p-datatable.p-datatable-responsive-stack .p-datatable-tbody > tr > td > :not(.p-column-title) {
+    min-width: 0;
+  }
+
+  .residents-editable-table.p-datatable.p-datatable-responsive-stack .p-datatable-tbody > tr > td:last-child {
+    grid-template-columns: 1fr;
+    justify-items: end;
+  }
+
+  .residents-editable-table.p-datatable.p-datatable-responsive-stack .p-datatable-tbody > tr > td:last-child .p-column-title {
+    display: none;
   }
 }
 
